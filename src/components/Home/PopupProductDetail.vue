@@ -12,10 +12,7 @@
       <div class="col-md-5">
         <div class="image-product hover-zoom">
           <img class="w-100" :src="selectedProduct.image" />
-          <span class="p-2"
-            ><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu
-            thích</span
-          >
+          <span class="p-2"><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu thích</span>
         </div>
       </div>
       <div class="col-md-2">
@@ -28,11 +25,11 @@
           <h4>{{ selectedProduct.name }}</h4>
           <p>{{ selectedProduct.product_desc }}</p>
           <h4>{{ formatPrice(selectedProduct.price) }}</h4>
-          <div class="size-option mt-3">
-            <label class="fs-6 fw-bold me-3">Size:</label>
-            <div class="btn btn-light" v-for="size in selectedProduct.size" :key="size">
-              {{ size }}
-            </div>
+            <div class="size-option mt-3">
+              <label class="fs-6 fw-bold me-3">Size:</label>
+              <div class="btn btn-light" v-for="size in selectedProduct.size" :key="size" @click="selectedSize(size)">
+                {{ size }}
+              </div>
           </div>
           <div class="color-option mt-3">
             <label class="fs-6 fw-bold me-2">Color:</label>
@@ -82,12 +79,6 @@
 <script>
 export default {
   name: "PopupProductDetail",
-  //  props: {
-  //   product: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
   props: ['selectedProduct'],
   data() {
     return {
@@ -95,7 +86,7 @@ export default {
       localQuantity:1,
     };
   },
-    emits: ['closePopup'],
+  emits: ['closePopup'],
   methods: {
     closePopup() {
       this.$emit('closePopup'); // Phát ra sự kiện đóng popup cho component cha
@@ -134,9 +125,12 @@ export default {
       }
       localStorage.setItem("cart", JSON.stringify(cart));
     },
-    getSize(product, size) {
-      product.size = size;
+    selectedSize(size) {
+      this.product.size = size;
     },
+    selectedColor(color){
+      this.product.color = color;
+    }
   },
 };
 </script>

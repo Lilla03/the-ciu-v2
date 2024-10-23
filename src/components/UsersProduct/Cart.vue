@@ -10,6 +10,7 @@
           </span>
 
           <h4 class="p-3">Giỏ hàng</h4>
+          <EmptyStatusVue v-show="emptyStatus"></EmptyStatusVue>
           <div v-show="!emptyStatus">
             <input
               class="select-all checkbox mx-3"
@@ -18,30 +19,20 @@
               @click="selectAll"
             /><span>Chọn tất cả</span>
           </div>
-
+          
           <div id="cart-left">
             <ul class="list-unstyled">
               {{
                 getCart()
               }}
-              <div class="state-cart text-center mb-5" v-show="emptyStatus">
-                <img
-                  src="@/assets/images/empty-card.webp"
-                  style="width: auto; height: 200px"
-                />
-                <p>Giỏ hàng của bạn đang trống!</p>
-                <p>
-                  Quay về Trang chủ và bỏ túi ngay các món đồ theo sở thích
-                  riêng của bạn nhé!
-                </p>
-              </div>
+
               <li
                 class="d-flex align-items-center my-3 pb-3 border-bottom"
                 v-for="product in cart"
                 :key="product.id"
               >
-                <div class="check" @click="selecteProduct(product)">
-                  <input class="m-3 checkbox" type="checkbox" />
+                <div class="check" @click="selectedProduct(product)">
+                  <input class="m-3 checkbox" type="checkbox"   v-model="product.selected"/>
                 </div>
 
                 <img class="img-cart" :src="product.image" />
@@ -53,18 +44,22 @@
                     }}</span>
 
                     <div class="choice row">
-                      <div class='select-size'>
-                        <lable class="">Size:</lable>
-                        <select class="custom-select">
+                      <div
+                        class="select-size col d-flex justify-content-between"
+                      >
+                        <lable class="col-6">Size:</lable>
+                        <select class="custom-select col-6">
                           <option v-for="size in product.size" :key="size">
                             {{ size }}
                           </option>
                         </select>
                       </div>
-
-                      <div  class='select-color mt-2' >
-                        <lable>Màu sắc:</lable>
-                        <select class="custom-select">
+                      <div class="w-100"></div>
+                      <div
+                        class="select-color mt-2 col d-flex justify-content-between"
+                      >
+                        <lable class="col-6">Màu sắc:</lable>
+                        <select class="custom-select col-6">
                           <option
                             v-for="colorChoice in product.colorChoice"
                             :key="colorChoice.color"
@@ -141,17 +136,19 @@
 
 <script>
 import { ref } from "vue";
+import EmptyStatusVue from './EmptyStatus.vue';
 export default {
   name: "BasicCart",
+  components: {EmptyStatusVue,},
   setup() {
     const emptyStatus = ref(false);
-    return { emptyStatus };
+    const selectProduct = ref({});
+    const selectedProductList = ref([]);
+    return { emptyStatus, selectProduct, selectedProductList};
   },
   data() {
     return {
       cart: [],
-      selectProduct: {},
-      selecteProductList: [],
     };
   },
   methods: {
@@ -195,36 +192,27 @@ export default {
         checkbox.checked = checked;
       });
     },
-    selecteProduct(product) {
+    selectedProduct(product) {
       this.selectProduct = product;
-      this.selecteProductList = this.selecteProductList.push(
-        this.selecteProduct
-      );
-      console.log(this.selecteProduct);
-      console.log(this.selecteProductList);
-    },
-    computed: {
-      totalPerProduct() {
-        let arr = this.selecteProductList.map((product) => {
-          return product.quantity * product.price;
-        }, 0);
-        console.log(arr);
-        return arr;
-      },
-      totalAmount() {
-        let arr = this.totalPerProduct;
-        let sum = arr.reduce((total, currentValue) => {
-          return total + currentValue;
-        }, 0);
-        return this.formatPrice(sum);
-      },
+      if (!this.selectedProductList.includes(product)) {
+         this.selectedProductList.push(product);
+      } 
+      console.log(this.selectedProductList)
     },
   },
+    computed: {
+  totalPerProduct() {
+    return this.selectedProductList.map((product) => product.quantity * product.price);
+  },
+  totalAmount() {
+    const sum = this.selectedProductList.reduce((total, product) => product.quantity * product.price , 0);
+    return this.formatPrice(sum);
+  },
+    },
 };
 </script>
 
 <style lang="scss" scoped>
-
 #cart {
   display: flex;
   justify-content: space-between;
@@ -233,8 +221,8 @@ export default {
 }
 .product-info {
   padding-left: 1.5rem;
-  &:hover{
-     box-shadow: unset;
+  &:hover {
+    box-shadow: unset;
   }
 }
 .checkbox {
@@ -250,7 +238,7 @@ export default {
   max-width: 5rem;
   text-align: center;
 }
-lable{
+lable {
   width: 30% !important;
 }
 .btn-sp {
