@@ -3,7 +3,18 @@ import { createStore } from "vuex";
 const store = createStore({
   state: {
     count: 0,
-    cart: JSON.parse(localStorage.getItem('cart')) || [],
+    // cart: JSON.parse(localStorage.getItem("cart")) || {},
+    cart: (() => {
+      localStorage.removeItem("cart");
+      const storedCart = localStorage.getItem("cart");
+      try {
+        console.log("Giá trị trong localStorage:", JSON.parse(storedCart));
+        return storedCart ? JSON.parse(storedCart) : []; // Trả về mảng rỗng nếu không có dữ liệu
+      } catch (error) {
+        console.error("Lỗi khi phân tích giỏ hàng từ localStorage:", error);
+        return []; // Trả về mảng rỗng nếu có lỗi
+      }
+    })(),
     selectedProduct: null,
     selectedSize: null,
     selectedColor: null,
@@ -162,29 +173,52 @@ const store = createStore({
         image: require("@/assets/images/pro-2.jpg"),
       },
     ],
+
+    subtotal: 0,
+    total: 0,
   },
   getters: {
     listProducts: (state) => state.listProducts,
-    cart: (state) => state.cart,
+    getCartItems: (state) => state.cart,
     count: (state) => state.count,
-    getSelectedProduct : (state) => state.selectedProduct,
-    getSelectedSize: (state) => state.selectedSize,
-    getSelectedColor: (state) => state.selectedColor,
+
+    formattedPrice: () =>  {
+      return (value) => {
+        let formatter = new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        });
+        return formatter.format(value);
+      }
+
+    },
+
+    getSubtotal(state) {
+        let sum = 0;
+        state.cart.map(item => {
+          sum += item.quantity * item.price;
+        })
+        return sum;
+    }
   },
   mutations: {
     addToCart(state, product) {
-      const ExistingItem = state.cart.find((item) => 
-        item.id == product.id &&
-        item.size == product.size &&
-        item.color == product.color
-    );
-      if(ExistingItem) {
-        ExistingItem.quantity ++;
-      }else {
-        state.cart.push({ ...product, quantity: product.quantity });
+      const ExistingItem = state.cart.find(
+        (item) =>
+          item.id == product.id &&
+          item.size == product.size &&
+          item.color == product.color
+      );
+      if (ExistingItem) {
+        ExistingItem.quantity++;
+      } else {
+        state.cart.push({ ...product});
       }
-
-      localStorage.setItem('cart', JSON.stringify(state.cart))
+      localStorage.setItem("cart", JSON.stringify(state.cart));
+    },
+    removeProduct(state, product) {
+      state.cart = state.cart.filter(item => item.id !== product.id);
+      localStorage.setItem("cart", JSON.stringify(state.cart)); // Cập nhật localStorage
     },
     setSelectedProduct(state, product) {
       state.selectedProduct = product;
@@ -195,30 +229,35 @@ const store = createStore({
     setSelectedColor(state, color) {
       state.selectedColor = color;
     },
+    setPrice(state, value) {
+      state.price = value;
+    },
     minusQty(state, product) {
       const item = state.cart.find((item) => item.id === product.id);
       if (item && item.quantity > 1) {
         item.quantity--;
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
     plusQty(state, product) {
       const item = state.cart.find((item) => item.id === product.id);
       if (item) {
         item.quantity++;
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
   },
   actions: {
-    selectProduct({commit}, product) {
-      commit('setSelectedProduct', product)
+    selectProduct({ commit }, product) {
+      commit("setSelectedProduct", product);
     },
     updateSelectedSize({ commit }, size) {
-      commit('setSelectedSize', size);
+      commit("setSelectedSize", size);
     },
     updateSelectedColor({ commit }, color) {
-      commit('setSelectedColor', color);
+      commit("setSelectedColor", color);
     },
-  }
+  },
 });
 
 export default store;

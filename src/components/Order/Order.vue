@@ -64,14 +64,15 @@
             </div>
             <div class="slide-bar-content px-4">
                 <div class="row">
-                    {{ getCart()}}
-                    <div class="product-list" v-for="product in cart" :key="product.id">
+                    <!-- {{ getCart()}} -->
+                    <div class="product-list" v-for="product in cartItems" :key="product.id">
                         <div class=" container d-flex align-items-center border-bottom">
                               <img class="img-payment" :src="product.image">
                             <div class="product-info m-2 w-50">
                                 <p class="product-name m-0">{{product.name}}</p> 
                             </div>
-                            <span class="product-size"> L</span> 
+                            <span class="product-size">{{product.selectedSize}}</span> 
+                            <span class="product-size">{{product.selectedColor  }}</span> 
                             <span class="product-quantity px-4">x{{product.quantity}}</span> 
                             <span class="price-sp w-50 text-end">{{formatPrice(product.price*product.quantity)}}</span>
                         </div>
@@ -126,16 +127,17 @@
 </template>
 
 <script>
+// import { mapGetters } from 'vuex';
 export default {
-    data() {
-      return {
-        cart: [],
-      }
-    },
+    // data() {
+    //   return {
+    //     cart: [],
+    //   }
+    // },
     methods: {
-    getCart() {
-      this.cart = JSON.parse(localStorage.getItem('cart'));
-    }, 
+    // getCart() {
+    //   this.cart = JSON.parse(localStorage.getItem('cart'));
+    // }, 
     formatPrice(value) {
       let formatter = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -146,19 +148,22 @@ export default {
     
     },
     computed: {
-    totalPerProduct() {
-      let arr = this.cart.map((product) => {
-          return product.quantity * product.price;
-      },0)
-      return arr;
+    cartItems() {
+        return this.$store.getters.getCartItems;
     },
-    totalAmount() {
-      let arr =this.totalPerProduct;
-      let sum = arr.reduce((total, currentValue) => {
-        return total + currentValue;
-      },0);
-      return  this.formatPrice(sum);
-    },
+    // totalPerProduct() {
+    //   let arr = this.cart.map((product) => {
+    //       return product.quantity * product.price;
+    //   },0)
+    //   return arr;
+    // },
+    // totalAmount() {
+    //   let arr =this.totalPerProduct;
+    //   let sum = arr.reduce((total, currentValue) => {
+    //     return total + currentValue;
+    //   },0);
+    //   return  this.formatPrice(sum);
+    // },
     }
 }
 </script>

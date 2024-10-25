@@ -8,8 +8,8 @@ import Product from '@/views/Products.vue'
 import ProductDetail from '@/components/Products/Product-detail.vue'
 import Cart from '@/components/UsersProduct/Cart.vue'
 import Wishlist from '@/components/UsersProduct/Wishlist.vue'
-import Payment from '@/components/Payment/Payment.vue'
-import Done from '@/components/Payment/Done.vue'
+import Order from '@/components/Order/Order.vue'
+import Done from '@/components/Order/Done.vue'
 import Signup from '@/views/Signup.vue'
 import Login from '@/views/Login.vue'
 import Onsale from '@/views/Onsale.vue'
@@ -23,7 +23,7 @@ const router = createRouter({
         { path: '/product/:id',component: ProductDetail },
         { path: '/cart', component: Cart },
         { path: '/favorite-products', component:  Wishlist},
-        { path: '/cart/payment', component: Payment },
+        { path: '/cart/payment', component: Order },
         { path: '/cart/payment/done', component: Done },
         { path: '/sign-up', component: Signup },
         { path: '/login', component: Login },

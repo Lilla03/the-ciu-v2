@@ -1,6 +1,6 @@
 <template>
   <div v-show="showPopup" class="container-fluit popup-product-detail">
-    <div class="row p-3 popup-content bg-white overflow-auto">
+    <div class="row p-3 popup-content bg-white">
       <span class="cancel-btn p-2 m-2" @click="closePopup()"
         ><i class="fa-solid fa-x"></i
       ></span>
@@ -25,7 +25,7 @@
         <div class="row">
           <h4>{{ selectedProduct.name }}</h4>
           <p>{{ selectedProduct.product_desc }}</p>
-          <h4>{{ formatPrice(selectedProduct.price) }}</h4>
+          <h4>{{ formatPrice }}</h4>
           <div class="size-option mt-3">
             <label class="fs-6 fw-bold me-3">Size:</label>
             <div
@@ -89,29 +89,28 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: "PopupProductDetail",
   props: ["selectedProduct"],
   data() {
     return {
-      showPopup: true, // Đảm bảo rằng showPopup được quản lý bên trong component con
+      showPopup: true, 
       localQuantity: 1,
-      selectedSize: null, // Thêm biến để lưu kích thước đã chọn
-      selectedColor: null, // Thêm biến để lưu màu sắc đã chọn
+      selectedSize: null, 
+      selectedColor: null, 
     };
   },
   emits: ["closePopup"],
+  computed: {
+    ...mapGetters(['formatPrice']),
+
+  },
   methods: {
     closePopup() {
       this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
-    formatPrice(value) {
-      let formatter = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-      return formatter.format(value);
-    },
+
     minusQty(product) {
       this.$store.commit("minusQty", product);
     },
@@ -123,52 +122,27 @@ export default {
       const cart = localStorage.getItem("cart");
       return cart ? JSON.parse(cart) : [];
     },
-    // addToCart(product) {
-    //   let cart = this.getCart();
-    //   const existingProductIndex = cart.findIndex(
-    //     (item) => item.id === product.id
-    //   );
-    //   if (existingProductIndex > -1) {
-    //     alert("Sản phẩm đã được thêm vào giỏ hàng");
-    //     cart[existingProductIndex].quantity =
-    //       (cart[existingProductIndex].quantity || 1) + 1;
-    //   } else {
-    //     product.quantity = 1;
-    //     cart.push(product);
-    //   }
-    //   localStorage.setItem("cart", JSON.stringify(cart));
-    // },
-    // selectedSize(size) {
-    //   this.product.size = size;
-    // },
-    // selectedColor(color){
-    //   this.product.color = color;
-    // }
     selectSize(size) {
-    this.selectedSize = size; // Lưu kích thước đã chọn
-    this.$store.dispatch("updateSelectedSize", size); // Cập nhật vào store
-  },
-  selectColor(color) {
-    this.selectedColor = color; // Lưu màu sắc đã chọn
-    this.$store.dispatch("updateSelectedColor", color); // Cập nhật vào store
-  },
-  addToCart() {
-    if (!this.selectedSize || !this.selectedColor) {
-      alert("Vui lòng chọn kích thước và màu sắc.");
-      return;
-    }
+    this.selectedSize = size; 
+    this.$store.dispatch("updateSelectedSize", size); 
+    },
+    selectColor(color) {
+      this.selectedColor = color; 
+      this.$store.dispatch("updateSelectedColor", color); // Cập nhật vào store
+    },
+    addToCart() {
+      if (!this.selectedSize || !this.selectedColor) {
+        alert("Vui lòng chọn kích thước và màu sắc.");
+        return;
+      }
+      const productToAdd = {
+        ...this.selectedProduct,
+        selectedColor:  this.selectedColor,
+        selectedSize : this.selectedSize,
 
-    const productToAdd = {
-      id: this.selectedProduct.id,
-      name: this.selectedProduct.name,
-      size: this.selectedSize,
-      color: this.selectedColor,
-      quantity: this.localQuantity,
-      price: this.selectedProduct.price,
-    };
-
-    this.$store.commit("addToCart", productToAdd);
-    alert("Sản phẩm đã được thêm vào giỏ hàng.");
+      }
+      this.$store.commit("addToCart", productToAdd);
+      alert("Sản phẩm đã được thêm vào giỏ hàng."); 
   },
   },
  
@@ -233,5 +207,9 @@ export default {
     background-color: rgba(229, 229, 229, 0.8);
     border-radius: 50%;
   }
+}
+.active{
+  background-color: #111;
+  color: #fff
 }
 </style>

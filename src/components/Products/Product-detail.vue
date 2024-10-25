@@ -82,7 +82,7 @@
               Thêm vào giỏ hàng
             </button>
             <router-link
-              @click="addToCart(product)"
+              @click="addToCart(product)" 
               :style="{ color: 'white' }"
               to="/cart"
               ><button class="btn btn-buy-now btn-dark">

@@ -22,13 +22,9 @@
           
           <div id="cart-left">
             <ul class="list-unstyled">
-              {{
-                getCart()
-              }}
-
               <li
                 class="d-flex align-items-center my-3 pb-3 border-bottom"
-                v-for="product in cart"
+                v-for="product in cartItems"
                 :key="product.id"
               >
                 <div class="check" @click="selectedProduct(product)">
@@ -39,9 +35,7 @@
                 <div class="row w-100">
                   <div class="col-12 col-lg-6 product-info">
                     <h6>{{ product.name }}</h6>
-                    <h6 class="">{{
-                      formatPrice(product.price)
-                    }}</h6>
+                    <h6 class="">{{ formattedPrice(product.price) }}</h6>
 
                     <div class="choice row">
                       <div
@@ -136,7 +130,9 @@
 
 <script>
 import { ref } from "vue";
+import { mapGetters } from 'vuex';
 import EmptyStatusVue from './EmptyStatus.vue';
+
 export default {
   name: "BasicCart",
   components: {EmptyStatusVue,},
@@ -144,47 +140,33 @@ export default {
     const emptyStatus = ref(false);
     const selectProduct = ref({});
     const selectedProductList = ref([]);
+
     return { emptyStatus, selectProduct, selectedProductList};
   },
-  data() {
-    return {
-      cart: [],
-    };
-  },
   methods: {
-    formatPrice(value) {
-      let formatter = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-      return formatter.format(value);
-    },
-    updateCart() {
-      localStorage.setItem("cart", JSON.stringify(this.cart));
-    },
     minusQty(product) {
       if (product.quantity > 1) {
         product.quantity--;
       }
-      this.updateCart();
+
     },
     plusQty(product) {
       product.quantity++;
-      this.updateCart();
+
     },
-    getCart() {
-      this.cart = JSON.parse(localStorage.getItem("cart"));
-      if (this.cart.length === 0) {
-        this.emptyStatus = true;
-      }
-    },
+    // getCart() {
+    //   this.cart = JSON.parse(localStorage.getItem("cart"));
+    //   if (this.cart.length === 0) {
+    //     this.emptyStatus = true;
+    //   }
+    // },
     removeProduct(product) {
-      this.cart = this.cart.filter((item) => item.id !== product.id);
-      localStorage.setItem("cart", JSON.stringify(this.cart));
+      this.$store.commit('removeProduct', product);
+
     },
 
     amountPerProduct(product) {
-      return this.formatPrice(product.quantity * product.price);
+      return this.formattedPrice(product.quantity * product.price);
     },
     selectAll(event) {
       const checked = event.target.checked;
@@ -201,13 +183,14 @@ export default {
     },
   },
     computed: {
-  totalPerProduct() {
-    return this.selectedProductList.map((product) => product.quantity * product.price);
-  },
-  totalAmount() {
-    const sum = this.selectedProductList.reduce((total, product) => product.quantity * product.price , 0);
-    return this.formatPrice(sum);
-  },
+      ...mapGetters(['getCartItems', 'formattedPrice']),
+      cartItems() {
+        return this.getCartItems;
+      },
+      totalAmount() {
+        const sum = this.cartItems.reduce((total, product) => total + (product.price * product.quantity), 0);
+        return this.formattedPrice(sum);
+      },
     },
 };
 </script>
