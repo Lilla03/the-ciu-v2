@@ -31,7 +31,7 @@
             </div>
             <div class="product-name">
               <div class="text-truncate px-3">
-                <router-link :to="'/product/' + product.id">
+                <router-link :to="'/product/' + product.id" @click="viewProductDetail(product)">
                   {{ product.name }}
                 </router-link>
               </div>
@@ -57,6 +57,7 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 export default {
  props: {
     products: {
@@ -65,6 +66,11 @@ export default {
     },
  },
   methods: {
+    ...mapActions(['selectProduct']),
+    viewProductDetail(product) {
+      this.selectProduct(product);
+
+    },
     formatPrice(value) {
       let formatter = new Intl.NumberFormat("vi-VN", {
         style: "currency",
@@ -76,22 +82,6 @@ export default {
       const cart = localStorage.getItem("cart");
       return cart ? JSON.parse(cart) : [];
     },
-
-    // addToCart(product) {
-    //   let cart = this.getCart();
-    //   const existingProductIndex = cart.findIndex(
-    //     (item) => item.id === product.id
-    //   );
-    //   if (existingProductIndex > -1) {
-    //     alert("Sản phẩm đã được thêm vào giỏ hàng");
-    //     cart[existingProductIndex].quantity =
-    //       (cart[existingProductIndex].quantity || 1) + 1;
-    //   } else {
-    //     product.quantity = 1;
-    //     cart.push(product);
-    //   }
-    //   localStorage.setItem("cart", JSON.stringify(cart));
-    // },
 
     addToCart(product) {
       this.$emit("addToCart", product);

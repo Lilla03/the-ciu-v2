@@ -12,12 +12,13 @@
     </div>
   </div>
   <Toolbox v-bind:strSearch="strSearch" v-on:handleSearch="handleSearch"/>
-  <Products v-bind:products="products" />
+  <Products v-bind:products="listProducts" />
 </template>
 
 <script>
 import Products from "@/components/Products/Product-card.vue";
 import Toolbox from "@/components/Products/Tool_box.vue/";
+import { mapGetters } from 'vuex';
 export default {
   name: "new",
   components: {
@@ -27,96 +28,6 @@ export default {
   
   data() {
     return {
-      products: [
-        {
-          id: 1,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 2,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 3,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 4,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 5,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 6,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 7,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-        {
-          id: 8,
-          type: "Áo",
-          name: "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl",
-          price: 150000,
-          product_desc:
-            "Khăn choàng phong cách Hàn Quốc thun trơn THE C.I.U - Orla Shawl là một phụ kiện thời trang tuyệt vời cho mọi cô gái yêu thích phong cách Hàn Quốc. Thiết kế Thời Trang: Khăn choàng Orla Shawl được thiết kế theo phong cách Hàn Quốc hiện đại và thanh lịch",
-          color: ["Creamy white", "Grey", "Black", "Red"],
-          quality: "1",
-          image: require("@/assets/images/pro-2.jpg"),
-        },
-      ],
       strSearch: "mmm",
     };
   },
@@ -125,6 +36,11 @@ export default {
       console.log("handle search in New.vue: ", data);
       this.$emit('handleSearch', data)
     },
+  },
+      computed: {
+        ...mapGetters([
+      'listProducts'
+    ])
   },
 };
 </script>

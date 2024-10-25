@@ -1,22 +1,23 @@
 <template>
-
-  <div
-   v-show="showPopup"
-    class="container-fluit popup-product-detail"
-  >
-  
+  <div v-show="showPopup" class="container-fluit popup-product-detail">
     <div class="row p-3 popup-content bg-white overflow-auto">
-        <span class="cancel-btn p-2 m-2" @click="closePopup()"
-          ><i class="fa-solid fa-x"></i
-        ></span>
+      <span class="cancel-btn p-2 m-2" @click="closePopup()"
+        ><i class="fa-solid fa-x"></i
+      ></span>
       <div class="col-md-5">
         <div class="image-product hover-zoom">
           <img class="w-100" :src="selectedProduct.image" />
-          <span class="p-2"><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu thích</span>
+          <span class="p-2"
+            ><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu
+            thích</span
+          >
         </div>
       </div>
       <div class="col-md-2">
-        <div v-for="colorChoice in selectedProduct.colorChoice" :key="colorChoice">
+        <div
+          v-for="colorChoice in selectedProduct.colorChoice"
+          :key="colorChoice"
+        >
           <img class="color-choice w-100 px-3 py-1" :src="colorChoice.url" />
         </div>
       </div>
@@ -25,11 +26,17 @@
           <h4>{{ selectedProduct.name }}</h4>
           <p>{{ selectedProduct.product_desc }}</p>
           <h4>{{ formatPrice(selectedProduct.price) }}</h4>
-            <div class="size-option mt-3">
-              <label class="fs-6 fw-bold me-3">Size:</label>
-              <div class="btn btn-light" v-for="size in selectedProduct.size" :key="size" @click="selectedSize(size)">
-                {{ size }}
-              </div>
+          <div class="size-option mt-3">
+            <label class="fs-6 fw-bold me-3">Size:</label>
+            <div
+              class="btn btn-light"
+              v-for="size in selectedProduct.size"
+              :key="size"
+              :class="{ active: selectedSize === size }"
+              @click="selectSize(size)"
+            >
+              {{ size }}
+            </div>
           </div>
           <div class="color-option mt-3">
             <label class="fs-6 fw-bold me-2">Color:</label>
@@ -37,6 +44,8 @@
               class="btn btn-light"
               v-for="colorChoice in selectedProduct.colorChoice"
               :key="colorChoice.color"
+              :class="{ active: selectedColor === colorChoice.color }"
+              @click="selectColor(colorChoice.color)"
             >
               {{ colorChoice.color }}
             </div>
@@ -58,11 +67,14 @@
             </div>
           </div>
           <div class="multi-task mt-4">
-            <button class="btn btn-add-to-cart" @click="addToCart(selectedProduct)">
+            <button
+              class="btn btn-add-to-cart"
+              @click="addToCart"
+            >
               Thêm vào giỏ hàng
             </button>
             <router-link
-              @click="addToCart(selectedProduct)"
+              @click="addToCart"
               :style="{ color: 'white' }"
               to="/cart"
               ><button class="btn btn-buy-now btn-dark">
@@ -79,17 +91,19 @@
 <script>
 export default {
   name: "PopupProductDetail",
-  props: ['selectedProduct'],
+  props: ["selectedProduct"],
   data() {
     return {
       showPopup: true, // Đảm bảo rằng showPopup được quản lý bên trong component con
-      localQuantity:1,
+      localQuantity: 1,
+      selectedSize: null, // Thêm biến để lưu kích thước đã chọn
+      selectedColor: null, // Thêm biến để lưu màu sắc đã chọn
     };
   },
-  emits: ['closePopup'],
+  emits: ["closePopup"],
   methods: {
     closePopup() {
-      this.$emit('closePopup'); // Phát ra sự kiện đóng popup cho component cha
+      this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
     formatPrice(value) {
       let formatter = new Intl.NumberFormat("vi-VN", {
@@ -99,39 +113,65 @@ export default {
       return formatter.format(value);
     },
     minusQty(product) {
-      if (product.quantity > 1) {
-        product.quantity--;
-      }
+      this.$store.commit("minusQty", product);
     },
     plusQty(product) {
-      product.quantity++;
+      this.$store.commit("plusQty", product);
+      console.log(product.quantity);
     },
     getCart() {
       const cart = localStorage.getItem("cart");
       return cart ? JSON.parse(cart) : [];
     },
-    addToCart(product) {
-      let cart = this.getCart();
-      const existingProductIndex = cart.findIndex(
-        (item) => item.id === product.id
-      );
-      if (existingProductIndex > -1) {
-        alert("Sản phẩm đã được thêm vào giỏ hàng");
-        cart[existingProductIndex].quantity =
-          (cart[existingProductIndex].quantity || 1) + 1;
-      } else {
-        product.quantity = 1;
-        cart.push(product);
-      }
-      localStorage.setItem("cart", JSON.stringify(cart));
-    },
-    selectedSize(size) {
-      this.product.size = size;
-    },
-    selectedColor(color){
-      this.product.color = color;
-    }
+    // addToCart(product) {
+    //   let cart = this.getCart();
+    //   const existingProductIndex = cart.findIndex(
+    //     (item) => item.id === product.id
+    //   );
+    //   if (existingProductIndex > -1) {
+    //     alert("Sản phẩm đã được thêm vào giỏ hàng");
+    //     cart[existingProductIndex].quantity =
+    //       (cart[existingProductIndex].quantity || 1) + 1;
+    //   } else {
+    //     product.quantity = 1;
+    //     cart.push(product);
+    //   }
+    //   localStorage.setItem("cart", JSON.stringify(cart));
+    // },
+    // selectedSize(size) {
+    //   this.product.size = size;
+    // },
+    // selectedColor(color){
+    //   this.product.color = color;
+    // }
+    selectSize(size) {
+    this.selectedSize = size; // Lưu kích thước đã chọn
+    this.$store.dispatch("updateSelectedSize", size); // Cập nhật vào store
   },
+  selectColor(color) {
+    this.selectedColor = color; // Lưu màu sắc đã chọn
+    this.$store.dispatch("updateSelectedColor", color); // Cập nhật vào store
+  },
+  addToCart() {
+    if (!this.selectedSize || !this.selectedColor) {
+      alert("Vui lòng chọn kích thước và màu sắc.");
+      return;
+    }
+
+    const productToAdd = {
+      id: this.selectedProduct.id,
+      name: this.selectedProduct.name,
+      size: this.selectedSize,
+      color: this.selectedColor,
+      quantity: this.localQuantity,
+      price: this.selectedProduct.price,
+    };
+
+    this.$store.commit("addToCart", productToAdd);
+    alert("Sản phẩm đã được thêm vào giỏ hàng.");
+  },
+  },
+ 
 };
 </script>
 
@@ -146,7 +186,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.2);
 
   .popup-content {
-    margin:4rem 8rem;
+    margin: 4rem 8rem;
     max-height: 100dvh;
     position: relative;
   }

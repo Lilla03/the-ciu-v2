@@ -8,19 +8,24 @@
       </div>
   </div>  
   <Toolbox/>
-    <products v-bind:products="products" />
+    <products v-bind:products="listProducts" />
 </template>
 
 <script>
 import products from '@/components/Products/Product-card.vue'
 import Toolbox from '@/components/Products/Tool_box.vue'
-
+import { mapGetters } from 'vuex';
 export default {
-  props: ['product'],
+
   name: 'product',
   components: {
     products,
     Toolbox,
+  },
+  computed: {
+    ...mapGetters([
+      'listProducts'
+    ])
   },
 
  

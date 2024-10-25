@@ -39,9 +39,9 @@
                 <div class="row w-100">
                   <div class="col-12 col-lg-6 product-info">
                     <h6>{{ product.name }}</h6>
-                    <span class="product-price">{{
+                    <h6 class="">{{
                       formatPrice(product.price)
-                    }}</span>
+                    }}</h6>
 
                     <div class="choice row">
                       <div
@@ -85,7 +85,7 @@
                       </button>
                     </div>
                     <div class="total-col">
-                      <h5>{{ amountPerProduct(product) }}</h5>
+                      <h6>{{ amountPerProduct(product) }}</h6>
                     </div>
                     <div
                       class="remove-product ps-4"
@@ -107,7 +107,7 @@
             <div class="cart-right-list">
               <dl class="order-cost">
                 <dt>Subtotal</dt>
-                <dd>{{ totalAmount }}</dd>
+                <dd >{{ totalAmount }}</dd>
                 <dt>Delivery</dt>
                 <dd>-</dd>
                 <dt><p class="total-amount">Total price:</p></dt>
@@ -235,7 +235,7 @@ export default {
 }
 .form-control {
   height: fit-content;
-  max-width: 5rem;
+  max-width: 4rem;
   text-align: center;
 }
 lable {
