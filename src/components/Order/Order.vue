@@ -64,7 +64,6 @@
             </div>
             <div class="slide-bar-content px-4">
                 <div class="row">
-                    <!-- {{ getCart()}} -->
                     <div class="product-list" v-for="product in cartItems" :key="product.id">
                         <div class=" container d-flex align-items-center border-bottom">
                               <img class="img-payment" :src="product.image">
@@ -74,7 +73,7 @@
                             <span class="product-size">{{product.selectedSize}}</span> 
                             <span class="product-size">{{product.selectedColor  }}</span> 
                             <span class="product-quantity px-4">x{{product.quantity}}</span> 
-                            <span class="price-sp w-50 text-end">{{formatPrice(product.price*product.quantity)}}</span>
+                            <span class="price-sp w-50 text-end">{{formattedPrice(product.price*product.quantity)}}</span>
                         </div>
                     </div>
                 </div>
@@ -127,27 +126,11 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 export default {
-    // data() {
-    //   return {
-    //     cart: [],
-    //   }
-    // },
-    methods: {
-    // getCart() {
-    //   this.cart = JSON.parse(localStorage.getItem('cart'));
-    // }, 
-    formatPrice(value) {
-      let formatter = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-      });
-      return formatter.format(value);
-    },
-    
-    },
+
     computed: {
+    ...mapGetters(['formattedPrice']),
     cartItems() {
         return this.$store.getters.getCartItems;
     },

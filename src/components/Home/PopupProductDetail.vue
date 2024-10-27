@@ -25,7 +25,7 @@
         <div class="row">
           <h4>{{ selectedProduct.name }}</h4>
           <p>{{ selectedProduct.product_desc }}</p>
-          <h4>{{ formatPrice }}</h4>
+          <h4>{{ formattedPrice(selectedProduct.price) }}</h4>
           <div class="size-option mt-3">
             <label class="fs-6 fw-bold me-3">Size:</label>
             <div
@@ -53,15 +53,15 @@
           <div class="quality mt-2">
             <label class="fs-6 fw-bold me-5">Số lượng</label>
             <div class="d-inline-flex">
-              <button class="btn-sp" @click="minusQty(selectedProduct)">
+              <button class="btn-sp" @click="minusQty">
                 <i class="fa-solid fa-minus"></i>
               </button>
               <input
                 class="form-control"
                 type="number"
-                v-model.number="localQuantity"
+                 v-model.number="localQuantity"
               />
-              <button class="btn-sp" @click="plusQty(selectedProduct)">
+              <button class="btn-sp" @click="plusQty">
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -103,20 +103,22 @@ export default {
   },
   emits: ["closePopup"],
   computed: {
-    ...mapGetters(['formatPrice']),
-
+    ...mapGetters(['formattedPrice']),
   },
   methods: {
+      // ...mapActions(['minusQty', 'plusQty']),
     closePopup() {
       this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
-
-    minusQty(product) {
-      this.$store.commit("minusQty", product);
+    plusQty() {
+       this.localQuantity++;
+      this.$store.dispatch("plusQty"); 
     },
-    plusQty(product) {
-      this.$store.commit("plusQty", product);
-      console.log(product.quantity);
+        minusQty() {
+       if (this.localQuantity > 1) {
+    this.localQuantity--;
+  }
+      this.$store.dispatch("minusQty"); 
     },
     getCart() {
       const cart = localStorage.getItem("cart");
@@ -139,9 +141,9 @@ export default {
         ...this.selectedProduct,
         selectedColor:  this.selectedColor,
         selectedSize : this.selectedSize,
-
+        quantity: this.localQuantity,
       }
-      this.$store.commit("addToCart", productToAdd);
+      this.$store.commit("ADD_TO_CART", productToAdd);
       alert("Sản phẩm đã được thêm vào giỏ hàng."); 
   },
   },

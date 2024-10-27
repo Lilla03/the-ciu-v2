@@ -117,9 +117,7 @@
               ></textarea>
             </div>
             <div class="cart-right-payment" v-show="!emptyStatus">
-              <router-link to="/cart/payment" class="btn btn-dark p-2 float-end"
-                >Thanh toán</router-link
-              >
+              <router-link to="/cart/payment" class="btn btn-dark p-2 float-end">Thanh toán</router-link>
             </div>
           </div>
         </div>
@@ -130,7 +128,7 @@
 
 <script>
 import { ref } from "vue";
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions} from 'vuex';
 import EmptyStatusVue from './EmptyStatus.vue';
 
 export default {
@@ -138,32 +136,22 @@ export default {
   components: {EmptyStatusVue,},
   setup() {
     const emptyStatus = ref(false);
-    const selectProduct = ref({});
     const selectedProductList = ref([]);
 
-    return { emptyStatus, selectProduct, selectedProductList};
+    return { emptyStatus,  selectedProductList};
   },
   methods: {
-    minusQty(product) {
-      if (product.quantity > 1) {
-        product.quantity--;
-      }
-
-    },
-    plusQty(product) {
-      product.quantity++;
-
-    },
+    ...mapActions(['minusQty', 'plusQty', 'removeProduct']),
     // getCart() {
     //   this.cart = JSON.parse(localStorage.getItem("cart"));
     //   if (this.cart.length === 0) {
     //     this.emptyStatus = true;
     //   }
     // },
-    removeProduct(product) {
-      this.$store.commit('removeProduct', product);
+    // removeProduct(product) {
+    //   this.$store.commit('removeProduct', product);
 
-    },
+    // },
 
     amountPerProduct(product) {
       return this.formattedPrice(product.quantity * product.price);
@@ -179,7 +167,6 @@ export default {
       if (!this.selectedProductList.includes(product)) {
          this.selectedProductList.push(product);
       } 
-      console.log(this.selectedProductList)
     },
   },
     computed: {

@@ -33,7 +33,7 @@
                     </div>
                     <div class="header-right">
                         <router-link to="/favorite-products"  class="wish-list"><sup class="wish-list_count">{{count_wishlist}} </sup></router-link>
-                        <router-link to="/cart" class="shopping-cart"><sup class="cart_count">{{count_cart}}</sup></router-link>
+                        <router-link to="/cart" class="shopping-cart"><sup class="cart_count">{{getCartCount}}</sup></router-link>
                         <router-link to="/login" class="btn-login">
                           <span class="login-text">Đăng nhập</span>
                         </router-link>
@@ -71,7 +71,7 @@
 
 
 <script>
-
+import { mapGetters } from 'vuex';
 export default {
   name: 'navbar',
   data() {
@@ -81,7 +81,6 @@ export default {
       contentDropdown:false,
       iconDropdown: true,
 
-      count_cart: 0,
       count_wishlist: 0,
       cart: [],
       wishlist: [],
@@ -140,8 +139,13 @@ export default {
         this.wishlist = newWishlish;
         this.updateCount();
       }
+    },
+
+
+  },
+      computed: {
+      ...mapGetters(['getCartCount'])
     }
-  }
 };
 </script>
 <style lang="scss" scoped>

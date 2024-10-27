@@ -2,19 +2,8 @@ import { createStore } from "vuex";
 
 const store = createStore({
   state: {
-    count: 0,
-    // cart: JSON.parse(localStorage.getItem("cart")) || {},
-    cart: (() => {
-      localStorage.removeItem("cart");
-      const storedCart = localStorage.getItem("cart");
-      try {
-        console.log("Giá trị trong localStorage:", JSON.parse(storedCart));
-        return storedCart ? JSON.parse(storedCart) : []; // Trả về mảng rỗng nếu không có dữ liệu
-      } catch (error) {
-        console.error("Lỗi khi phân tích giỏ hàng từ localStorage:", error);
-        return []; // Trả về mảng rỗng nếu có lỗi
-      }
-    })(),
+    cart_count: 0,
+    cart: JSON.parse(localStorage.getItem("cart")) || [],
     selectedProduct: null,
     selectedSize: null,
     selectedColor: null,
@@ -180,9 +169,12 @@ const store = createStore({
   getters: {
     listProducts: (state) => state.listProducts,
     getCartItems: (state) => state.cart,
-    count: (state) => state.count,
+    getCartCount: (state) => state.cart.length,
+    selectedSize: (state) => state.selectedSize,
+    selectedColor: (state) => state.selectedColor,
+    
 
-    formattedPrice: () =>  {
+    formattedPrice: () =>  {  
       return (value) => {
         let formatter = new Intl.NumberFormat("vi-VN", {
           style: "currency",
@@ -202,7 +194,7 @@ const store = createStore({
     }
   },
   mutations: {
-    addToCart(state, product) {
+    ADD_TO_CART(state, product) {
       const ExistingItem = state.cart.find(
         (item) =>
           item.id == product.id &&
@@ -216,22 +208,20 @@ const store = createStore({
       }
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
-    removeProduct(state, product) {
+    REMOVE_PRODUCT(state, product) {
       state.cart = state.cart.filter(item => item.id !== product.id);
       localStorage.setItem("cart", JSON.stringify(state.cart)); // Cập nhật localStorage
     },
-    setSelectedProduct(state, product) {
+    SET_SELECTED_PRODUCT(state, product) {
       state.selectedProduct = product;
     },
-    setSelectedSize(state, size) {
+    SET_SELECTED_SIZE(state, size) {
       state.selectedSize = size;
     },
-    setSelectedColor(state, color) {
+    SET_SELECTED_COLOR(state, color) {
       state.selectedColor = color;
     },
-    setPrice(state, value) {
-      state.price = value;
-    },
+
     minusQty(state, product) {
       const item = state.cart.find((item) => item.id === product.id);
       if (item && item.quantity > 1) {
@@ -249,13 +239,22 @@ const store = createStore({
   },
   actions: {
     selectProduct({ commit }, product) {
-      commit("setSelectedProduct", product);
+      commit("SET_SELECTED_PRODUCT", product);
+    },
+    removeProduct({commit}, product) {
+      commit("REMOVE_PRODUCT", product)
     },
     updateSelectedSize({ commit }, size) {
-      commit("setSelectedSize", size);
+      commit("SET_SELECTED_SIZE", size);
     },
     updateSelectedColor({ commit }, color) {
-      commit("setSelectedColor", color);
+      commit("SET_SELECTED_COLOR", color);
+    },
+    minusQty({ commit }, product) {
+      commit('minusQty', product);
+    },
+    plusQty({ commit }, product) {
+      commit('plusQty', product);
     },
   },
 });

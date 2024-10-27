@@ -37,7 +37,7 @@
               </div>
             </div>
             <div class="product-price fs-5">
-              {{ formatPrice(product.price) }}
+              {{ formattedPrice(product.price) }}
             </div>
             <div class="row ms-1 py-3">
               <div
@@ -57,7 +57,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
  props: {
     products: {
@@ -65,18 +65,14 @@ export default {
       required: true,
     },
  },
+ computed: {
+    ...mapGetters(['formattedPrice'])
+ },
   methods: {
     ...mapActions(['selectProduct']),
     viewProductDetail(product) {
       this.selectProduct(product);
 
-    },
-    formatPrice(value) {
-      let formatter = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-      return formatter.format(value);
     },
     getCart() {
       const cart = localStorage.getItem("cart");
