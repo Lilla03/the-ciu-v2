@@ -221,21 +221,28 @@ const store = createStore({
     SET_SELECTED_COLOR(state, color) {
       state.selectedColor = color;
     },
-
-    minusQty(state, product) {
-      const item = state.cart.find((item) => item.id === product.id);
-      if (item && item.quantity > 1) {
-        item.quantity--;
-        localStorage.setItem("cart", JSON.stringify(state.cart));
-      }
-    },
-    plusQty(state, product) {
-      const item = state.cart.find((item) => item.id === product.id);
+    SET_LOCAL_QUANTITY(state, { productId, quantity }) {
+      const item = state.cart.find(item => item.id === productId);
       if (item) {
-        item.quantity++;
-        localStorage.setItem("cart", JSON.stringify(state.cart));
+        item.quantity = quantity;
       }
+      localStorage.setItem("cart", JSON.stringify(state.cart));
     },
+
+      minusQty(state, product) {
+        const item = state.cart.find((item) => item.id === product.id);
+        if (item && item.quantity > 1) {
+          item.quantity--;
+          localStorage.setItem("cart", JSON.stringify(state.cart));
+        }
+      },
+      plusQty(state, product) {
+        const item = state.cart.find((item) => item.id === product.id);
+        if (item) {
+          item.quantity++;
+          localStorage.setItem("cart", JSON.stringify(state.cart));
+        }
+      },
   },
   actions: {
     selectProduct({ commit }, product) {
@@ -249,6 +256,9 @@ const store = createStore({
     },
     updateSelectedColor({ commit }, color) {
       commit("SET_SELECTED_COLOR", color);
+    },
+    updateLocalQuantity({ commit }, { productId, quantity }) {
+      commit('SET_LOCAL_QUANTITY', { productId, quantity });
     },
     minusQty({ commit }, product) {
       commit('minusQty', product);

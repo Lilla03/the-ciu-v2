@@ -59,7 +59,8 @@
               <input
                 class="form-control"
                 type="number"
-                 v-model.number="localQuantity"
+                v-model.number="localQuantity" 
+                 @change="updateCartQuantity"
               />
               <button class="btn-sp" @click="plusQty">
                 <i class="fa-solid fa-plus"></i>
@@ -96,33 +97,38 @@ export default {
   data() {
     return {
       showPopup: true, 
-      localQuantity: 1,
       selectedSize: null, 
+      localQuantity: 1,
       selectedColor: null, 
     };
   },
   emits: ["closePopup"],
   computed: {
-    ...mapGetters(['formattedPrice']),
+    ...mapGetters(['formattedPrice', 'getCartItems']),
+   quantity: {
+      get() {
+        const item = this.getCartItems.find(item => item.id === this.selectedProduct.id);
+        return item ? item.quantity : 1;
+      },
+      set(value) {
+        this.$store.dispatch("updateLocalQuantity", {
+          productId: this.selectedProduct.id,
+          quantity: value
+        });
+      }
+    },
   },
   methods: {
-      // ...mapActions(['minusQty', 'plusQty']),
     closePopup() {
       this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
-    plusQty() {
+      plusQty() {
        this.localQuantity++;
-      this.$store.dispatch("plusQty"); 
     },
-        minusQty() {
-       if (this.localQuantity > 1) {
-    this.localQuantity--;
-  }
-      this.$store.dispatch("minusQty"); 
-    },
-    getCart() {
-      const cart = localStorage.getItem("cart");
-      return cart ? JSON.parse(cart) : [];
+    minusQty() {
+      if ( this.localQuantity > 1) {
+         this.localQuantity--;
+      }
     },
     selectSize(size) {
     this.selectedSize = size; 
@@ -141,7 +147,7 @@ export default {
         ...this.selectedProduct,
         selectedColor:  this.selectedColor,
         selectedSize : this.selectedSize,
-        quantity: this.localQuantity,
+        quantity:  this.localQuantity,
       }
       this.$store.commit("ADD_TO_CART", productToAdd);
       alert("Sản phẩm đã được thêm vào giỏ hàng."); 
