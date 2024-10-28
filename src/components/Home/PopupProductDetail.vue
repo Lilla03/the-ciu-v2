@@ -97,8 +97,8 @@ export default {
   data() {
     return {
       showPopup: true, 
-      selectedSize: null, 
       localQuantity: 1,
+      selectedSize: null, 
       selectedColor: null, 
     };
   },

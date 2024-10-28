@@ -23,7 +23,7 @@
                 :key="product.id"
               >
                 <div class="check" @click="selectedProduct(product)">
-                  <input class="m-3 checkbox" type="checkbox"   v-model="product.selected"/>
+                  <input class="m-3 checkbox" type="checkbox" />
                 </div>
 
                 <img class="img-cart" :src="product.image" />
@@ -37,8 +37,8 @@
                         class="select-size col d-flex justify-content-between"
                       >
                         <label class="col-6">Size:</label>
-                        <select class="custom-select col-6">
-                          <option v-for="size in product.size" :key="size">
+                        <select class="custom-select col-6" v-model="product.selectedSize">
+                          <option v-for="size in product.size" :key="size"  >
                             {{ size }}
                           </option>
                         </select>
@@ -48,10 +48,11 @@
                         class="select-color mt-2 col d-flex justify-content-between"
                       >
                         <label class="col-6">Màu sắc:</label>
-                        <select class="custom-select col-6">
+                        <select class="custom-select col-6" v-model="product.selectedColor" >
                           <option
                             v-for="colorChoice in product.colorChoice"
                             :key="colorChoice.color"
+         
                           >
                             {{ colorChoice.color }}
                           </option>
@@ -122,21 +123,25 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { mapGetters, mapActions} from 'vuex';
 import EmptyStatusVue from './EmptyStatus.vue';
 
 export default {
   name: "BasicCart",
   components: {EmptyStatusVue,},
-  setup() {
-    const selectedProductList = ref([]);
-    return { selectedProductList};
-  },
   methods: {
     ...mapActions(['minusQty', 'plusQty', 'removeProduct']),
     amountPerProduct(product) {
       return this.formattedPrice(product.quantity * product.price);
+    },
+
+    selectSize(size) {
+      this.selectedSize = size; 
+      this.$store.dispatch("updateSelectedSize", size); 
+    },
+    selectColor(color) {
+      this.selectedColor = color; 
+      this.$store.dispatch("updateSelectedColor", color);   
     },
 
     //Chọn tất cả sản phẩm
@@ -158,6 +163,7 @@ export default {
     computed: {
       ...mapGetters(['getCartItems', 'formattedPrice']),
       cartItems() {
+        
         return this.getCartItems;
       },
       emptyStatus() {

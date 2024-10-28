@@ -13,20 +13,6 @@ export default {
     components: {
         ProductCart,
     },
-    // data() {
-    //     return {
-    //       wishlist: [],
-    //     }
-    // },
-    // mounted() {
-    //     this.getWishList();
-    // },
-    // methods: {
-    // getWishList() {
-    //       const my_wishlist = localStorage.getItem('wishlist');
-    //       this.wishlist = my_wishlist ? JSON.parse(my_wishlist) : [];
-    //   },
-    // },
      computed: {
       ...mapGetters(['getWishListItems'])
     }
