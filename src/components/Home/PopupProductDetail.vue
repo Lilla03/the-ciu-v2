@@ -1,6 +1,6 @@
 <template>
-  <div v-show="showPopup" class="container-fluit popup-product-detail">
-    <div class="row p-3 popup-content bg-white">
+  <div v-show="showPopup" class="container-fluit popup-product-detail ">
+    <div class="row p-3 popup-content bg-white overflow-auto">
       <span class="cancel-btn p-2 m-2" @click="closePopup()"
         ><i class="fa-solid fa-x"></i
       ></span>
@@ -24,9 +24,9 @@
       <div class="col-md-5">
         <div class="row">
           <h4>{{ selectedProduct.name }}</h4>
-          <p>{{ selectedProduct.product_desc }}</p>
+          <p class="text-secondary fs-6">{{ selectedProduct.product_desc }}</p>
           <h4>{{ formattedPrice(selectedProduct.price) }}</h4>
-          <div class="size-option mt-3">
+          <div class="size-option mt-1">
             <label class="fs-6 fw-bold me-3">Size:</label>
             <div
               class="btn btn-light"
@@ -38,7 +38,7 @@
               {{ size }}
             </div>
           </div>
-          <div class="color-option mt-3">
+          <div class="color-option mt-1">
             <label class="fs-6 fw-bold me-2">Color:</label>
             <div
               class="btn btn-light"

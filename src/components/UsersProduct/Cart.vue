@@ -3,12 +3,7 @@
     <div class="container">
       <div class="row w-100">
         <div class="col-xs-12 col-md-8 p-4 bg-white">
-          <span
-            ><router-link to="/" class="text-secondary"
-              ><i class="fa-solid fa-angle-left"></i> Quay lại mua hàng
-            </router-link>
-          </span>
-
+          <span><router-link to="/" class="text-secondary"><i class="fa-solid fa-angle-left"></i> Quay lại mua hàng</router-link></span>
           <h4 class="p-3">Giỏ hàng</h4>
           <EmptyStatusVue v-show="emptyStatus"></EmptyStatusVue>
           <div v-show="!emptyStatus">
@@ -135,20 +130,11 @@ export default {
   name: "BasicCart",
   components: {EmptyStatusVue,},
   setup() {
-    const emptyStatus = ref(false);
     const selectedProductList = ref([]);
-
-    return { emptyStatus,  selectedProductList};
+    return { selectedProductList};
   },
   methods: {
     ...mapActions(['minusQty', 'plusQty', 'removeProduct']),
-    // getCart() {
-    //   this.cart = JSON.parse(localStorage.getItem("cart"));
-    //   if (this.cart.length === 0) {
-    //     this.emptyStatus = true;
-    //   }
-    // },
-
     amountPerProduct(product) {
       return this.formattedPrice(product.quantity * product.price);
     },
@@ -168,13 +154,15 @@ export default {
       product.selected = !product.selected; // Đảo ngược trạng thái chọn
       this.$store.commit('SELECTED_ITEM', product); // Cập nhật danh sách đã chọn
     },
-  },
+    },
     computed: {
       ...mapGetters(['getCartItems', 'formattedPrice']),
       cartItems() {
         return this.getCartItems;
       },
-
+      emptyStatus() {
+        return this.getCartItems.length === 0;
+      },
       // Tổng giá trị sản phẩm đã chọn
       totalAmount() {
         const selectedItems = this.cartItems.filter(product => product.selected);
