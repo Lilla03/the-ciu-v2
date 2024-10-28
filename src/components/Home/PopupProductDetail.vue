@@ -136,7 +136,7 @@ export default {
     },
     selectColor(color) {
       this.selectedColor = color; 
-      this.$store.dispatch("updateSelectedColor", color); // Cập nhật vào store
+      this.$store.dispatch("updateSelectedColor", color);   
     },
     addToCart() {
       if (!this.selectedSize || !this.selectedColor) {

@@ -41,7 +41,7 @@
                       <div
                         class="select-size col d-flex justify-content-between"
                       >
-                        <lable class="col-6">Size:</lable>
+                        <label class="col-6">Size:</label>
                         <select class="custom-select col-6">
                           <option v-for="size in product.size" :key="size">
                             {{ size }}
@@ -52,7 +52,7 @@
                       <div
                         class="select-color mt-2 col d-flex justify-content-between"
                       >
-                        <lable class="col-6">Màu sắc:</lable>
+                        <label class="col-6">Màu sắc:</label>
                         <select class="custom-select col-6">
                           <option
                             v-for="colorChoice in product.colorChoice"
@@ -101,11 +101,11 @@
             <div class="cart-right-list">
               <dl class="order-cost">
                 <dt>Subtotal</dt>
-                <dd >{{ totalAmount }}</dd>
+                <dd >{{ formattedPrice(totalAmount) }}</dd>
                 <dt>Delivery</dt>
                 <dd>-</dd>
                 <dt><p class="total-amount">Total price:</p></dt>
-                <dd>{{ totalAmount }}</dd>
+                <dd>{{ formattedPrice(totalAmount) }}</dd>
               </dl>
             </div>
             <div class="order-note">
@@ -148,25 +148,25 @@ export default {
     //     this.emptyStatus = true;
     //   }
     // },
-    // removeProduct(product) {
-    //   this.$store.commit('removeProduct', product);
-
-    // },
 
     amountPerProduct(product) {
       return this.formattedPrice(product.quantity * product.price);
     },
+
+    //Chọn tất cả sản phẩm
     selectAll(event) {
       const checked = event.target.checked;
       this.$el.querySelectorAll(".check input").forEach((checkbox) => {
         checkbox.checked = checked;
       });
+      this.cartItems.forEach(product => { 
+        product.selected = checked;
+        this.$store.commit('SELECTED_ITEM', product);
+      });
     },
     selectedProduct(product) {
-      this.selectProduct = product;
-      if (!this.selectedProductList.includes(product)) {
-         this.selectedProductList.push(product);
-      } 
+      product.selected = !product.selected; // Đảo ngược trạng thái chọn
+      this.$store.commit('SELECTED_ITEM', product); // Cập nhật danh sách đã chọn
     },
   },
     computed: {
@@ -174,9 +174,12 @@ export default {
       cartItems() {
         return this.getCartItems;
       },
+
+      // Tổng giá trị sản phẩm đã chọn
       totalAmount() {
-        const sum = this.cartItems.reduce((total, product) => total + (product.price * product.quantity), 0);
-        return this.formattedPrice(sum);
+        const selectedItems = this.cartItems.filter(product => product.selected);
+        const sum = selectedItems.reduce((total, product) => total + (product.price * product.quantity), 0);
+        return sum;
       },
     },
 };
@@ -208,7 +211,7 @@ export default {
   max-width: 4rem;
   text-align: center;
 }
-lable {
+label {
   width: 30% !important;
 }
 .btn-sp {

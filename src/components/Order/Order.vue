@@ -64,7 +64,7 @@
             </div>
             <div class="slide-bar-content px-4">
                 <div class="row">
-                    <div class="product-list" v-for="product in cartItems" :key="product.id">
+                    <div class="product-list" v-for="product in selectedItems" :key="product.id">
                         <div class=" container d-flex align-items-center border-bottom">
                               <img class="img-payment" :src="product.image">
                             <div class="product-info m-2 w-50">
@@ -88,7 +88,7 @@
                                 <tbody>
                                     <tr class="total-line">
                                             <th class="total-line__name w-70 fw-normal py-1" >Tạm tính</th>
-                                        <td class="total-line__price w-30 text-end ">{{totalAmount}}</td>
+                                        <td class="total-line__price w-30 text-end ">{{ formattedPrice(totalAmount)}}</td>
                                     </tr>
                                     <tr class="total-line">
                                         <th class="total-line__name w-70 fw-normal py-1">Phí vận chuyển</th>
@@ -102,7 +102,7 @@
                                 <tfoot>
                                     <tr class="total-line">
                                         <th class="total-line__name w-70 fw-normal py-1" >Tổng cộng</th>
-                                        <td class="total-line__price w-30 text-end"><h5>{{totalAmount}}</h5></td>
+                                        <td class="total-line__price w-30 text-end"><h5>{{ formattedPrice(totalAmount)}}</h5></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -130,23 +130,15 @@ import { mapGetters } from 'vuex';
 export default {
 
     computed: {
-    ...mapGetters(['formattedPrice']),
+    ...mapGetters(['formattedPrice', 'selectedItems', 'getCartItems']),
     cartItems() {
-        return this.$store.getters.getCartItems;
-    },
-    // totalPerProduct() {
-    //   let arr = this.cart.map((product) => {
-    //       return product.quantity * product.price;
-    //   },0)
-    //   return arr;
-    // },
-    // totalAmount() {
-    //   let arr =this.totalPerProduct;
-    //   let sum = arr.reduce((total, currentValue) => {
-    //     return total + currentValue;
-    //   },0);
-    //   return  this.formatPrice(sum);
-    // },
+        return this.getCartItems;
+      },
+    totalAmount() {
+        const selectedItems = this.cartItems.filter(product => product.selected);
+        const sum = selectedItems.reduce((total, product) => total + (product.price * product.quantity), 0);
+        return sum;
+      },
     }
 }
 </script>

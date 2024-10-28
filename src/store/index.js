@@ -4,6 +4,8 @@ const store = createStore({
   state: {
     cart_count: 0,
     cart: JSON.parse(localStorage.getItem("cart")) || [],
+    selectedItems: [],
+
     selectedProduct: null,
     selectedSize: null,
     selectedColor: null,
@@ -172,7 +174,7 @@ const store = createStore({
     getCartCount: (state) => state.cart.length,
     selectedSize: (state) => state.selectedSize,
     selectedColor: (state) => state.selectedColor,
-    
+    selectedItems: (state) => state.selectedItems,
 
     formattedPrice: () =>  {  
       return (value) => {
@@ -227,6 +229,17 @@ const store = createStore({
         item.quantity = quantity;
       }
       localStorage.setItem("cart", JSON.stringify(state.cart));
+    },
+    SELECTED_ITEM(state, product) {
+      if(!state.selectedItems.includes(product)) {
+        state.selectedItems.push(product);
+      }else {
+        state.selectedItems = state.selectedItems.filter(item => item != product)
+      }
+    },
+
+    CLEAR_SELECTED_ITEMS  (state) {
+      state.selectedItems = [];
     },
 
       minusQty(state, product) {
