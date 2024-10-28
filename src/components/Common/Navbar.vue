@@ -32,7 +32,7 @@
                         <button class="btn-mobile-menu"><i @click=" toggleMobilNav"  class="fa-solid fa-bars" v-show="mobile"></i></button>
                     </div>
                     <div class="header-right">
-                        <router-link to="/favorite-products"  class="wish-list"><sup class="wish-list_count">{{count_wishlist}} </sup></router-link>
+                        <router-link to="/favorite-products"  class="wish-list"><sup class="wish-list_count">{{getWishListCount}} </sup></router-link>
                         <router-link to="/cart" class="shopping-cart"><sup class="cart_count">{{getCartCount}}</sup></router-link>
                         <router-link to="/login" class="btn-login">
                           <span class="login-text">Đăng nhập</span>
@@ -81,14 +81,14 @@ export default {
       contentDropdown:false,
       iconDropdown: true,
 
-      count_wishlist: 0,
-      cart: [],
-      wishlist: [],
+      // count_wishlist: 0,
+      // cart: [],
+      // wishlist: [],
     };
   },
   mounted() {
-    this.intervalId = setInterval(this.checkCartUpdate, 1000); 
-    this.intervalId = setInterval(this.checkWishListUpdate, 1000); 
+    // this.intervalId = setInterval(this.checkCartUpdate, 1000); 
+    // this.intervalId = setInterval(this.checkWishListUpdate, 1000); 
     document.addEventListener('click', this.handleClickOutside);
   },
  
@@ -114,37 +114,37 @@ export default {
           this.iconDropdown = !this. iconDropdown;
         }
       },
-    updateCount() {
-       return this.count_cart = this.cart ? this.cart.length : 0, 
-              this.count_wishlist = this.wishlist ? this.wishlist.length : 0;
-    },
-    getCart() {
-        const cart = localStorage.getItem('cart');
-        return cart ? JSON.parse(cart) : [];
-    },
-    getWishList() {
-          const wishlist = localStorage.getItem('wishlist');
-          return wishlist ? JSON.parse(wishlist) : []; 
-      },
-    checkCartUpdate() {
-      const newCart = this.getCart();
-      if (JSON.stringify(newCart) !== JSON.stringify(this.cart)) {
-        this.cart = newCart;
-        this.updateCount();
-      }
-    },
-    checkWishListUpdate() {
-      const newWishlish = this.getWishList();
-      if (JSON.stringify(newWishlish) !== JSON.stringify(this.wishlist)) {
-        this.wishlist = newWishlish;
-        this.updateCount();
-      }
-    },
+    // updateCount() {
+    //    return this.count_cart = this.cart ? this.cart.length : 0, 
+    //           this.count_wishlist = this.wishlist ? this.wishlist.length : 0;
+    // },
+    // getCart() {
+    //     const cart = localStorage.getItem('cart');
+    //     return cart ? JSON.parse(cart) : [];
+    // },
+    // getWishList() {
+    //       const wishlist = localStorage.getItem('wishlist');
+    //       return wishlist ? JSON.parse(wishlist) : []; 
+    //   },
+    // checkCartUpdate() {
+    //   const newCart = this.getCart();
+    //   if (JSON.stringify(newCart) !== JSON.stringify(this.cart)) {
+    //     this.cart = newCart;
+    //     this.updateCount();
+    //   }
+    // },
+    // checkWishListUpdate() {
+    //   const newWishlish = this.getWishList();
+    //   if (JSON.stringify(newWishlish) !== JSON.stringify(this.wishlist)) {
+    //     this.wishlist = newWishlish;
+    //     this.updateCount();
+    //   }
+    // },
 
 
   },
       computed: {
-      ...mapGetters(['getCartCount'])
+      ...mapGetters(['getCartCount', 'getWishListCount'])
     }
 };
 </script>

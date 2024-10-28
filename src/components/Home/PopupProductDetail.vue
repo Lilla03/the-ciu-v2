@@ -122,7 +122,7 @@ export default {
     closePopup() {
       this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
-      plusQty() {
+    plusQty() {
        this.localQuantity++;
     },
     minusQty() {

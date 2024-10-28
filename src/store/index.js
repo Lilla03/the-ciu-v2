@@ -4,6 +4,7 @@ const store = createStore({
   state: {
     cart_count: 0,
     cart: JSON.parse(localStorage.getItem("cart")) || [],
+    wishlist: JSON.parse(localStorage.getItem("wishlist")) || [],
     selectedItems: [],
 
     selectedProduct: null,
@@ -171,7 +172,11 @@ const store = createStore({
   getters: {
     listProducts: (state) => state.listProducts,
     getCartItems: (state) => state.cart,
+    getWishListItems: (state) => state.wishlist,
+
     getCartCount: (state) => state.cart.length,
+    getWishListCount: (state) => state.wishlist.length,
+
     selectedSize: (state) => state.selectedSize,
     selectedColor: (state) => state.selectedColor,
     selectedItems: (state) => state.selectedItems,
