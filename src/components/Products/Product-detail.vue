@@ -18,10 +18,10 @@
   </div>
   <div
     class="container my-2 mb-5"
-    v-for="product in products"
+     v-for="product in listProducts"
     :key="product.id"
   >
-    <div class="row">
+    <div class="row" v-if = "product.id === local_id">
       <div class="col-md-6">
         <div class="row">
           <div class="image-product hover-zoom">
@@ -141,7 +141,7 @@
     </div>
 
     <h2 class="mt-4">Sản phẩm tương tự</h2>
-    <ProductCart :products="relatedProducts"/>
+    <!-- <ProductCart :products="relatedProducts"/> -->
      <div class="container d-flex justify-content-center">
         <a href="#" class="read-more d-flex text-uppercase">
           Xem thêm
@@ -154,15 +154,28 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import ProductCart from './Product-card.vue'
+
+// import ProductCart from './Product-card.vue'
 export default {
   name: "ProductDetail",
-  components:{ProductCart},
+  // components:{ProductCart},
+  data() {
+    return {
+      local_id: '',
+    }
+  },
+  beforemounted() {
+      const local_id =  this.$router.params.id;
+      console.log( local_id )
+      // for(const item in listProducts) {
+      //   if(item.id === this.id) {
+      //     this.product = item;
+      //   }
+      // }
+
+  },
   computed: {
-    ...mapGetters(['getSelectedProduct']),
-    product() {
-      return this.getSelectedProduct;
-    },
+    ...mapGetters(['listProducts']),
   },
 
   methods: {

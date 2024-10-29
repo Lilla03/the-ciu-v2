@@ -22,11 +22,11 @@
                 v-for="product in cartItems"
                 :key="product.id"
               >
-                <div class="check" @click="selectedProduct(product)">
-                  <input class="m-3 checkbox" type="checkbox" />
+                <div class="mx-3" @click="selectedProduct(product)">
+                  <input class=" checkbox" type="checkbox" />
                 </div>
 
-                <img class="img-cart" :src="product.image" />
+                <img class=" img-cart" :src="product.image" />
                 <div class="row w-100">
                   <div class="col-12 col-lg-6 product-info">
                     <h6>{{ product.name }}</h6>
@@ -112,7 +112,7 @@
                 placeholder="Ghi chú..."
               ></textarea>
             </div>
-            <div class="cart-right-payment" v-show="!emptyStatus">
+            <div class="cart-right-payment" v-show="!emptyStatus && !(totalAmount ===0)">
               <router-link to="/cart/payment" class="btn btn-dark p-2 float-end">Thanh toán</router-link>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default {
   }
 }
 .checkbox {
-  scale: 1.6;
+  scale: 1.5;
 }
 .img-cart {
   height: 5rem;

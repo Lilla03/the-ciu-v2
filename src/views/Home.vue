@@ -107,9 +107,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'listProducts'
-    ])
+    ...mapGetters(['listProducts'])
   },
   methods: {
     showProductDetail(product) {
@@ -121,6 +119,9 @@ export default {
       this.showPopup = false;
     },
   },
+  async mounted() {
+        await this.$store.dispatch('fetchData'); 
+    }
 };
 </script>
 <style lang="scss" scoped>

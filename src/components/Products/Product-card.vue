@@ -10,7 +10,9 @@
           <div class="product-info">
             <figure class="border-bottom">
               <div class="hover-img overflow-hidden">
-                <img class="w-100" :src="product.image" />
+                <div v-for="(image, index) in product.images" :key="index">
+                  <img class="w-100" :src="image.baseUrl" /> <!-- Sử dụng baseUrl để hiển thị ảnh -->
+                </div>
               </div>
 
               <div class="product-action">
@@ -27,27 +29,27 @@
             </figure>
 
             <div class="product-type">
-              {{ product.type }}
+              {{ product.categoryName }}
             </div>
             <div class="product-name">
               <div class="text-truncate px-3">
-                <router-link :to="'/product/' + product.id" @click="viewProductDetail(product)">
+                <router-link :to="`/product/${product.id}`">
                   {{ product.name }}
                 </router-link>
               </div>
             </div>
             <div class="product-price fs-5">
-              {{ formattedPrice(product.price) }}
+              {{ formattedPrice(product.price.value) }}
             </div>
-            <div class="row ms-1 py-3">
+            <div class=" row ms-1 py-3">
               <div
-                class="col-auto"
-                v-for="colorChoice in product.colorChoice"
-                :key="colorChoice"
+              class="d-flex flex-row  overflow-auto" 
               >
-                <button class="border-0">
-                  <img class="color-choice" :src="colorChoice.url" />
-                </button>
+
+                  <div   v-for="(image, index) in product.allArticleBaseImages" :key="index">
+                      <img :src="image" style="max-width: 50px; height: 50px;" class="p-1"/>
+                    </div>
+           
               </div>
             </div>
           </div>
@@ -70,10 +72,7 @@ export default {
  },
   methods: {
     ...mapActions(['selectProduct']),
-    viewProductDetail(product) {
-      this.selectProduct(product);
 
-    },
     getCart() {
       const cart = localStorage.getItem("cart");
       return cart ? JSON.parse(cart) : [];
