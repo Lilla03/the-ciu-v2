@@ -19,13 +19,13 @@
   <div
     class="container my-2 mb-5"
      v-for="product in listProducts"
-    :key="product.id"
+    :key="product.code"
   >
     <div class="row" v-if = "product.id === local_id">
       <div class="col-md-6">
         <div class="row">
           <div class="image-product hover-zoom">
-            <img class="w-100" :src="product.image" />
+            <img class="w-100" :src="product.images" />
           </div>
           <div class="d-flex">
             <div
@@ -45,20 +45,26 @@
           <h3>{{ formatPrice(product.price) }}</h3>
           <div class="size-option mt-3">
             <label class="fs-5 fw-bold me-3">Size:</label>
-            <select v-model="selectedSize">
-            <option class="btn btn-light" v-for="size in product.size" :key="size" :value='size' >
-              {{ size }}
-            </option>
-            </select>
+            <div
+              class="btn btn-light"
+              v-for="(size, index) in selectedProduct.variantSizes"
+              :key="index"
+              :class="{ active: selectedSize === size.filterCode }"
+              @click="selectSize(size.filterCode)"
+            >
+              {{ size.filterCode }}
+            </div>
           </div>
           <div class="color-option mt-3">
             <label class="fs-5 fw-bold me-3">Color:</label>
-            <div
+           <div
               class="btn btn-light"
-              v-for="colorChoice in product.colorChoice"
-              :key="colorChoice.color"
+              v-for="(color, index) in selectedProduct.articleColorNames"
+              :key="index"
+              :class="{ active: selectedColor === color  }"
+              @click="selectColor(color )"
             >
-              {{ colorChoice.color }}
+              {{ color }}
             </div>
           </div>
           <div class="quality mt-4">
@@ -161,7 +167,7 @@ export default {
   // components:{ProductCart},
   data() {
     return {
-      local_id: '',
+
     }
   },
   beforemounted() {

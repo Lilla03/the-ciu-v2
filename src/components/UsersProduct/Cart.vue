@@ -20,7 +20,7 @@
               <li
                 class="d-flex align-items-center my-3 pb-3 border-bottom"
                 v-for="product in cartItems"
-                :key="product.id"
+                :key="product.code"
               >
                 <div class="mx-3" @click="selectedProduct(product)">
                   <input class=" checkbox" type="checkbox" />
@@ -30,7 +30,7 @@
                 <div class="row w-100">
                   <div class="col-12 col-lg-6 product-info">
                     <h6>{{ product.name }}</h6>
-                    <h6 class="">{{ formattedPrice(product.price) }}</h6>
+                    <h6 class="">{{ formattedPrice(product.price.value) }}</h6>
 
                     <div class="choice row">
                       <div
@@ -38,8 +38,8 @@
                       >
                         <label class="col-6">Size:</label>
                         <select class="custom-select col-6" v-model="product.selectedSize">
-                          <option v-for="size in product.size" :key="size"  >
-                            {{ size }}
+                          <option v-for="(size, index) in selectedProduct.variantSizes" :key="index"  >
+                            {{ size.filterCode }}
                           </option>
                         </select>
                       </div>
@@ -50,11 +50,9 @@
                         <label class="col-6">Màu sắc:</label>
                         <select class="custom-select col-6" v-model="product.selectedColor" >
                           <option
-                            v-for="colorChoice in product.colorChoice"
-                            :key="colorChoice.color"
-         
+                            v-for="(color, index) in selectedProduct.articleColorNames" :key="index"
                           >
-                            {{ colorChoice.color }}
+                            {{ color }}
                           </option>
                         </select>
                       </div>
@@ -132,7 +130,7 @@ export default {
   methods: {
     ...mapActions(['minusQty', 'plusQty', 'removeProduct']),
     amountPerProduct(product) {
-      return this.formattedPrice(product.quantity * product.price);
+      return this.formattedPrice(product.quantity * product.price.value);
     },
 
     selectSize(size) {
@@ -172,7 +170,7 @@ export default {
       // Tổng giá trị sản phẩm đã chọn
       totalAmount() {
         const selectedItems = this.cartItems.filter(product => product.selected);
-        const sum = selectedItems.reduce((total, product) => total + (product.price * product.quantity), 0);
+        const sum = selectedItems.reduce((total, product) => total + (product.price.value * product.quantity), 0);
         return sum;
       },
     },

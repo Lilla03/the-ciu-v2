@@ -1,12 +1,12 @@
 <template>
-  <div v-show="showPopup" class="container-fluit popup-product-detail ">
+  <div v-show="showPopup" class="container-fluit popup-product-detail">
     <div class="row p-3 popup-content bg-white overflow-auto">
       <span class="cancel-btn p-2 m-2" @click="closePopup()"
         ><i class="fa-solid fa-x"></i
       ></span>
       <div class="col-md-5">
         <div class="image-product hover-zoom">
-          <img class="w-100" :src="selectedProduct.image" />
+          <img class="w-100" :src="selectedProduct.images" />
           <span class="p-2"
             ><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu
             thích</span
@@ -15,39 +15,39 @@
       </div>
       <div class="col-md-2">
         <div
-          v-for="colorChoice in selectedProduct.colorChoice"
-          :key="colorChoice"
+          v-for="(image, index) in selectedProduct.allArticleBaseImages"
+          :key="index"
         >
-          <img class="color-choice w-100 px-3 py-1" :src="colorChoice.url" />
+          <img :src="image" class="p-1" />
         </div>
       </div>
       <div class="col-md-5">
         <div class="row">
           <h4>{{ selectedProduct.name }}</h4>
-          <p class="text-secondary fs-6">{{ selectedProduct.product_desc }}</p>
-          <h4>{{ formattedPrice(selectedProduct.price) }}</h4>
+          <!-- <p class="text-secondary fs-6">{{ selectedProduct.product_desc }}</p> -->
+          <h4 >{{ formattedPrice(price) }}</h4>
           <div class="size-option mt-1">
             <label class="fs-6 fw-bold me-3">Size:</label>
             <div
               class="btn btn-light"
-              v-for="size in selectedProduct.size"
-              :key="size"
-              :class="{ active: selectedSize === size }"
-              @click="selectSize(size)"
+              v-for="(size, index) in selectedProduct.variantSizes"
+              :key="index"
+              :class="{ active: selectedSize === size.filterCode }"
+              @click="selectSize(size.filterCode)"
             >
-              {{ size }}
+              {{ size.filterCode }}
             </div>
           </div>
           <div class="color-option mt-1">
             <label class="fs-6 fw-bold me-2">Color:</label>
             <div
               class="btn btn-light"
-              v-for="colorChoice in selectedProduct.colorChoice"
-              :key="colorChoice.color"
-              :class="{ active: selectedColor === colorChoice.color }"
-              @click="selectColor(colorChoice.color)"
+              v-for="(color, index) in selectedProduct.articleColorNames"
+              :key="index"
+              :class="{ active: selectedColor === color }"
+              @click="selectColor(color)"
             >
-              {{ colorChoice.color }}
+              {{ color }}
             </div>
           </div>
           <div class="quality mt-2">
@@ -59,8 +59,8 @@
               <input
                 class="form-control"
                 type="number"
-                v-model.number="localQuantity" 
-                 @change="updateCartQuantity"
+                v-model.number="localQuantity"
+                @change="updateCartQuantity"
               />
               <button class="btn-sp" @click="plusQty">
                 <i class="fa-solid fa-plus"></i>
@@ -68,10 +68,7 @@
             </div>
           </div>
           <div class="multi-task mt-4">
-            <button
-              class="btn btn-add-to-cart"
-              @click="addToCart"
-            >
+            <button class="btn btn-add-to-cart" @click="addToCart">
               Thêm vào giỏ hàng
             </button>
             <router-link
@@ -90,32 +87,34 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   name: "PopupProductDetail",
-  props: ["selectedProduct"],
+  props: ["selectedProduct","price"],
   data() {
     return {
-      showPopup: true, 
+      showPopup: true,
       localQuantity: 1,
-      selectedSize: null, 
-      selectedColor: null, 
+      selectedSize: null,
+      selectedColor: null,
     };
   },
   emits: ["closePopup"],
   computed: {
-    ...mapGetters(['formattedPrice', 'getCartItems']),
-   quantity: {
+    ...mapGetters(["formattedPrice", "getCartItems"]),
+    quantity: {
       get() {
-        const item = this.getCartItems.find(item => item.id === this.selectedProduct.id);
+        const item = this.getCartItems.find(
+          (item) => item.id === this.selectedProduct.id
+        );
         return item ? item.quantity : 1;
       },
       set(value) {
         this.$store.dispatch("updateLocalQuantity", {
           productId: this.selectedProduct.id,
-          quantity: value
+          quantity: value,
         });
-      }
+      },
     },
   },
   methods: {
@@ -123,20 +122,20 @@ export default {
       this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
     },
     plusQty() {
-       this.localQuantity++;
+      this.localQuantity++;
     },
     minusQty() {
-      if ( this.localQuantity > 1) {
-         this.localQuantity--;
+      if (this.localQuantity > 1) {
+        this.localQuantity--;
       }
     },
     selectSize(size) {
-    this.selectedSize = size; 
-    this.$store.dispatch("updateSelectedSize", size); 
+      this.selectedSize = size;
+      this.$store.dispatch("updateSelectedSize", size);
     },
     selectColor(color) {
-      this.selectedColor = color; 
-      this.$store.dispatch("updateSelectedColor", color);   
+      this.selectedColor = color;
+      this.$store.dispatch("updateSelectedColor", color);
     },
     addToCart() {
       if (!this.selectedSize || !this.selectedColor) {
@@ -145,15 +144,14 @@ export default {
       }
       const productToAdd = {
         ...this.selectedProduct,
-        selectedColor:  this.selectedColor,
-        selectedSize : this.selectedSize,
-        quantity:  this.localQuantity,
-      }
+        selectedColor: this.selectedColor,
+        selectedSize: this.selectedSize,
+        quantity: this.localQuantity,
+      };
       this.$store.commit("ADD_TO_CART", productToAdd);
-      alert("Sản phẩm đã được thêm vào giỏ hàng."); 
+      alert("Sản phẩm đã được thêm vào giỏ hàng.");
+    },
   },
-  },
- 
 };
 </script>
 
@@ -216,8 +214,8 @@ export default {
     border-radius: 50%;
   }
 }
-.active{
+.active {
   background-color: #111;
-  color: #fff
+  color: #fff;
 }
 </style>

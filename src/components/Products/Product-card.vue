@@ -42,14 +42,10 @@
               {{ formattedPrice(product.price.value) }}
             </div>
             <div class=" row ms-1 py-3">
-              <div
-              class="d-flex flex-row  overflow-auto" 
-              >
-
-                  <div   v-for="(image, index) in product.allArticleBaseImages" :key="index">
-                      <img :src="image" style="max-width: 50px; height: 50px;" class="p-1"/>
-                    </div>
-           
+              <div class="d-flex flex-row  overflow-auto" >
+                <div v-for="(image, index) in product.allArticleBaseImages" :key="index">
+                  <img :src="image" style="max-width: 50px; height: 50px;" class="p-1"/>
+                </div>
               </div>
             </div>
           </div>
