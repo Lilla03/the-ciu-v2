@@ -41,7 +41,6 @@ export default {
         // prev slide
         const prevSlide = () => {
               currentSlide.value = (currentSlide.value - 1 + getSlideCount.value) % getSlideCount.value;
-              console.log(currentSlide.value)
         }
         // go to slide
         const goToSlide = (index) => {

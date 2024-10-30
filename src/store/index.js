@@ -112,7 +112,16 @@ const store = createStore({
     async fetchData({commit}) {
       try{
         const response = await api.getProducts();
-        console.log(response.data.results[0]);
+        // console.log(response.data.results[0]);
+        commit('SET_LIST_PRODUCTS', response.data.results);
+      }catch(error) {
+        console.log('Error fetching data: ', error)
+      }
+    },
+    async fetchProduct({commit}) {
+      try{
+        const response = await api.getProducts();
+        // console.log(response.data.results[0]);
         commit('SET_LIST_PRODUCTS', response.data.results);
       }catch(error) {
         console.log('Error fetching data: ', error)

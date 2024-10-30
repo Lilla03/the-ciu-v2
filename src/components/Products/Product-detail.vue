@@ -18,10 +18,8 @@
   </div>
   <div
     class="container my-2 mb-5"
-     v-for="product in listProducts"
-    :key="product.code"
   >
-    <div class="row" v-if = "product.code=== local_id">
+    <div class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="image-product hover-zoom">
@@ -42,14 +40,14 @@
         <div class="row">
           <h3>{{ product.name }}</h3>
           <p>{{ product.product_desc }}</p>
-          <h3>{{ formatPrice(product.price) }}</h3>
+          <h3>{{ formattedPrice(product.price) }}</h3>
           <div class="size-option mt-3">
             <label class="fs-5 fw-bold me-3">Size:</label>
             <div
               class="btn btn-light"
-              v-for="(size, index) in selectedProduct.variantSizes"
+              v-for="(size, index) in product.variantSizes"
               :key="index"
-              :class="{ active: selectedSize === size.filterCode }"
+              :class="{ active: product === size.filterCode }"
               @click="selectSize(size.filterCode)"
             >
               {{ size.filterCode }}
@@ -59,9 +57,9 @@
             <label class="fs-5 fw-bold me-3">Color:</label>
            <div
               class="btn btn-light"
-              v-for="(color, index) in selectedProduct.articleColorNames"
+              v-for="(color, index) in product.articleColorNames"
               :key="index"
-              :class="{ active: selectedColor === color  }"
+              :class="{ active: product === color  }"
               @click="selectColor(color )"
             >
               {{ color }}
@@ -159,39 +157,34 @@
 </template>
 
 <script>
+import api from '@/service/api';
 import { mapGetters } from 'vuex';
-
 // import ProductCart from './Product-card.vue'
 export default {
   name: "ProductDetail",
   // components:{ProductCart},
   data() {
     return {
-
+      product: {},
+      product_id: '',
     }
   },
-  beforemounted() {
-      const local_id =  this.$router.params.id;
-      console.log( local_id )
-      // for(const item in listProducts) {
-      //   if(item.code=== this.id) {
-      //     this.product = item;
-      //   }
-      // }
+  onBeforeRouteUpdate() {
+     const product_data =  api.getProducts().then(response => {
+        return response.data.results;
+     });
+           console.log( this.$router.params.id )
+      this.product_id =  this.$router.params.id;
+
+      this.product = product_data[ this.product_id]
+      console.log(this.product)
 
   },
   computed: {
-    ...mapGetters(['listProducts']),
+    ...mapGetters(['formattedPrice']),
   },
-
   methods: {
-    formatPrice(value) {
-      let formatter = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-      return formatter.format(value);
-    },
+
     minusQty(product) {
       this.$store.commit('minusQty', product)
     },
@@ -199,28 +192,8 @@ export default {
        this.$store.commit('plusQty',product)
     },
 
-    getCart() {
-      const cart = localStorage.getItem("cart");
-      return cart ? JSON.parse(cart) : [];
-    },
-    addToCart(product) {
-      let cart = this.getCart();
-      const existingProductIndex = cart.findIndex(
-        (item) => item.code=== product.id
-      );
-      if (existingProductIndex > -1) {
-        alert("Sản phẩm đã được thêm vào giỏ hàng");
-        cart[existingProductIndex].quantity =
-          (cart[existingProductIndex].quantity || 1) + 1;
-      } else {
-        product.quantity = 1;
-        cart.push(product);
-      }
-      localStorage.setItem("cart", JSON.stringify(cart));
-    },
-    getSize(product, size) {
-      product.size = size;
-    },
+   
+
   },
 };
 </script>

@@ -20,7 +20,7 @@ const router = createRouter({
         { path: '/', component: Home },
         { path: '/new', component: New },
         { path: '/product', component: Product },
-        { path: '/product/:id',component: ProductDetail, prop: true },
+        { path: '/product/:id',component: ProductDetail},
         { path: '/cart', component: Cart },
         { path: '/favorite-products', component:  Wishlist},
         { path: '/cart/payment', component: Order },
