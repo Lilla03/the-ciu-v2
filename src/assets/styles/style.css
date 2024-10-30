@@ -186,7 +186,7 @@ footer ul li img{
     display: none;
     }
 .catalog-item__t-shirt{
-    background-image: url("@/assets/images/t-shirt.jpg");
+    background-image: url("https://image.hm.com/assets/hm/84/66/846662cb5200eb4a5759dc7e4c801a2d912ceb8d.jpg");
     background-size: cover;
     position: relative;
     background-position: center;
@@ -194,14 +194,14 @@ footer ul li img{
 }
 
 .catalog-item__jacket{
-    background-image: url("@/assets/images/jacket.jpg");
+    background-image: url("https://image.hm.com/assets/hm/19/63/1963f78945f45ae8ea8c7f784c48197d7579675e.jpg");
     background-size: cover;
     background-position: center;
     position: relative;
     height: 100%;
 }
 .catalog-item__top{
-    background-image: url("@/assets/images/top.jpg");
+    background-image: url("https://image.hm.com/assets/hm/69/ad/69ad27e0b4d8f77bfabd06388719cee9912bb12e.jpg");
     background-size: cover;
     position: relative;
     background-position: center;
