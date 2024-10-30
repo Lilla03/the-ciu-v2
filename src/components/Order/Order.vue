@@ -130,27 +130,26 @@
             <div class="row">
               <div
                 class="product-list"
-                v-for="product in selectedItems"
-                :key="product.id"
+                v-for="product in selectedItems"  
+                :key="product.code"
               >
-                <div class="container d-flex align-items-center border-bottom">
-                  <img class="img-payment" :src="product.image" />
-                  <div class=" m-2">
-                    <div class="d-flex justify-contents-between">
-                        <div class="">
-                            <p class="product-name m-0">{{ product.name }}</p>
-                            <span class="">{{product.selectedSize}}-</span>
-                            <span class="">{{product.selectedColor}}</span>
-                        </div>
-                        <span class=" align-self-center ">x{{ product.quantity }}</span>
-                    </div>
-                    <span class="price-sp float-end">{{
-                      formattedPrice(product.price * product.quantity)
-                    }}</span>
+                <div class="container w-100 d-flex align-items-center border-bottom justify-contents-between ">
+                   <div v-for="(image, index) in product.images" :key="index">
+                    <img class="img-payment" :src="image.baseUrl" />
                   </div>
+                  <div class="d-flex w-100 justify-content-between  m-2">
+                  <div class="d-flex flex-column">
+                      <p class=" m-0">{{ product.name }}</p>
+                      <span >{{product.selectedSize}}-{{product.selectedColor}}</span>
+                  </div>
+                  <span class=" align-self-center ">x{{ product.quantity }}</span>
+                  <div class="align-self-center ">{{
+                    formattedPrice(product.price.value * product.quantity)
+                  }}</div>
                 </div>
               </div>
             </div>
+          </div>
             <div class="row">
               <div class="discount-code">
                 <div class="d-flex py-3 border-bottom justify-content-between">
@@ -232,7 +231,7 @@ export default {
         (product) => product.selected
       );
       const sum = selectedItems.reduce(
-        (total, product) => total + product.price * product.quantity,
+        (total, product) => total + product.price.value * product.quantity,
         0
       );
       return sum;

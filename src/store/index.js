@@ -75,7 +75,7 @@ const store = createStore({
       state.selectedColor = color;
     },
     SET_LOCAL_QUANTITY(state, { productId, quantity }) {
-      const item = state.cart.find(item => item.id === productId);
+      const item = state.cart.find(item => item.code=== productId);
       if (item) {
         item.quantity = quantity;
       }
@@ -94,14 +94,14 @@ const store = createStore({
     },
 
       minusQty(state, product) {
-        const item = state.cart.find((item) => item.id === product.id);
+        const item = state.cart.find((item) => item.code=== product.id);
         if (item && item.quantity > 1) {
           item.quantity--;
           localStorage.setItem("cart", JSON.stringify(state.cart));
         }
       },
       plusQty(state, product) {
-        const item = state.cart.find((item) => item.id === product.id);
+        const item = state.cart.find((item) => item.code=== product.id);
         if (item) {
           item.quantity++;
           localStorage.setItem("cart", JSON.stringify(state.cart));

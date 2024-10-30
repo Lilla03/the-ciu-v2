@@ -9,9 +9,9 @@
           <div v-show="!emptyStatus">
             <input
               class="select-all checkbox mx-3"
-              name="select-all"
               type="checkbox"
               @click="selectAll"
+                v-model="allSelected"
             /><span>Chọn tất cả</span>
           </div>
           
@@ -23,14 +23,15 @@
                 :key="product.code"
               >
                 <div class="mx-3" @click="selectedProduct(product)">
-                  <input class=" checkbox" type="checkbox" />
+                  <input class=" checkbox" type="checkbox"  v-model="product.selected" />
                 </div>
-
-                <img class=" img-cart" :src="product.image" />
+                  <div v-for="(image, index) in product.images" :key="index">
+                    <img class="img-cart" :src="image.baseUrl" />
+                  </div>
                 <div class="row w-100">
                   <div class="col-12 col-lg-6 product-info">
                     <h6>{{ product.name }}</h6>
-                    <h6 class="">{{ formattedPrice(product.price.value) }}</h6>
+                    <h6>{{ formattedPrice(product.price.value) }}</h6>
 
                     <div class="choice row">
                       <div
@@ -38,7 +39,7 @@
                       >
                         <label class="col-6">Size:</label>
                         <select class="custom-select col-6" v-model="product.selectedSize">
-                          <option v-for="(size, index) in selectedProduct.variantSizes" :key="index"  >
+                          <option v-for="(size, index) in product.variantSizes" :key="index"  >
                             {{ size.filterCode }}
                           </option>
                         </select>
@@ -50,7 +51,7 @@
                         <label class="col-6">Màu sắc:</label>
                         <select class="custom-select col-6" v-model="product.selectedColor" >
                           <option
-                            v-for="(color, index) in selectedProduct.articleColorNames" :key="index"
+                            v-for="(color, index) in product.articleColorNames" :key="index"
                           >
                             {{ color }}
                           </option>
@@ -167,6 +168,17 @@ export default {
       emptyStatus() {
         return this.getCartItems.length === 0;
       },
+      allSelected: {
+        get() {
+          return this.cartItems.length > 0 && this.cartItems.every(product => product.selected);
+        },
+        set(value) {
+          this.cartItems.forEach(product => {
+            product.selected = value;
+            this.$store.commit('SELECTED_ITEM', product);
+          });
+        }
+      },  
       // Tổng giá trị sản phẩm đã chọn
       totalAmount() {
         const selectedItems = this.cartItems.filter(product => product.selected);

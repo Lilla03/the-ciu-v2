@@ -21,7 +21,7 @@
      v-for="product in listProducts"
     :key="product.code"
   >
-    <div class="row" v-if = "product.id === local_id">
+    <div class="row" v-if = "product.code=== local_id">
       <div class="col-md-6">
         <div class="row">
           <div class="image-product hover-zoom">
@@ -174,7 +174,7 @@ export default {
       const local_id =  this.$router.params.id;
       console.log( local_id )
       // for(const item in listProducts) {
-      //   if(item.id === this.id) {
+      //   if(item.code=== this.id) {
       //     this.product = item;
       //   }
       // }
@@ -206,7 +206,7 @@ export default {
     addToCart(product) {
       let cart = this.getCart();
       const existingProductIndex = cart.findIndex(
-        (item) => item.id === product.id
+        (item) => item.code=== product.id
       );
       if (existingProductIndex > -1) {
         alert("Sản phẩm đã được thêm vào giỏ hàng");

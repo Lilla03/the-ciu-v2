@@ -6,42 +6,51 @@
       ></span>
       <div class="col-md-5">
         <div class="image-product hover-zoom">
-          <img class="w-100" :src="selectedProduct.images" />
+          <div v-for="(image, index) in selectedProduct.images" :key="index">
+            <img class="w-100" :src="image.baseUrl" />
+          </div>
           <span class="p-2"
             ><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu
             thích</span
           >
         </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 overflow-auto" style="height: 500px">
         <div
-          v-for="(image, index) in selectedProduct.allArticleBaseImages"
+          v-for="(image, index) in selectedProduct.galleryImages"
           :key="index"
         >
-          <img :src="image" class="p-1" />
+          <img :src="image.baseUrl" class="p-1 w-100 h-auto" />
         </div>
       </div>
       <div class="col-md-5">
         <div class="row">
           <h4>{{ selectedProduct.name }}</h4>
           <!-- <p class="text-secondary fs-6">{{ selectedProduct.product_desc }}</p> -->
-          <h4 >{{ formattedPrice(price) }}</h4>
-          <div class="size-option mt-1">
-            <label class="fs-6 fw-bold me-3">Size:</label>
-            <div
-              class="btn btn-light"
-              v-for="(size, index) in selectedProduct.variantSizes"
-              :key="index"
-              :class="{ active: selectedSize === size.filterCode }"
-              @click="selectSize(size.filterCode)"
-            >
-              {{ size.filterCode }}
+          <h4>{{ formattedPrice(price) }}</h4>
+          <div class="row size-option mt-1">
+            <div class="col-md-3">
+              <label class="fs-6 fw-bold me-3">Size:</label>
+            </div>
+            <div class="">
+              <div
+                class="btn btn-light px-0 py-1 my-1"
+                v-for="(size, index) in selectedProduct.variantSizes"
+                :key="index"
+                :class="{ active: selectedSize === size.filterCode }"
+                @click="selectSize(size.filterCode)"
+              >
+                {{ size.filterCode }}
+              </div>
             </div>
           </div>
-          <div class="color-option mt-1">
+          <div class="row color-option mt-1">
+              <div class="col-md-3">
             <label class="fs-6 fw-bold me-2">Color:</label>
+              </div>
+              <div class="">
             <div
-              class="btn btn-light"
+              class="btn btn-light  p-1 my-1"
               v-for="(color, index) in selectedProduct.articleColorNames"
               :key="index"
               :class="{ active: selectedColor === color }"
@@ -49,6 +58,7 @@
             >
               {{ color }}
             </div>
+              </div>
           </div>
           <div class="quality mt-2">
             <label class="fs-6 fw-bold me-5">Số lượng</label>
@@ -90,7 +100,7 @@
 import { mapGetters } from "vuex";
 export default {
   name: "PopupProductDetail",
-  props: ["selectedProduct","price"],
+  props: ["selectedProduct", "price"],
   data() {
     return {
       showPopup: true,
@@ -105,7 +115,7 @@ export default {
     quantity: {
       get() {
         const item = this.getCartItems.find(
-          (item) => item.id === this.selectedProduct.id
+          (item) => item.code=== this.selectedProduct.id
         );
         return item ? item.quantity : 1;
       },

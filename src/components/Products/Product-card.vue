@@ -11,7 +11,7 @@
             <figure class="border-bottom">
               <div class="hover-img overflow-hidden">
                 <div v-for="(image, index) in product.images" :key="index">
-                  <img class="w-100" :src="image.baseUrl" /> <!-- Sử dụng baseUrl để hiển thị ảnh -->
+                  <img class="w-100" :src="image.baseUrl" />
                 </div>
               </div>
 
@@ -85,7 +85,7 @@ export default {
     addToWishList(product) {
       let wishlist = this.getWishList();
       const existingProductIndex = wishlist.findIndex(
-        (item) => item.id === product.id
+        (item) => item.code=== product.id
       );
       if (existingProductIndex > -1) {
         alert("Sản phẩm đã được thêm vào mục yêu thích");
