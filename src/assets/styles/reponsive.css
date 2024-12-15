@@ -1,0 +1,32 @@
+@media screen and (max-width: 992px) {
+    .btn-mobile-menu{
+        display: block;
+    }
+    .header-left nav{
+        display: none;
+    }
+    .header-search{
+        display: none;
+    }
+    .carousel-conponent.carousel {
+        height: 340px;
+    }
+    .img-product{
+        height: 200px;
+    }
+    span.login-text{
+        display: none;
+    }
+}
+@media screen and (max-width: 768px) {
+    .carousel-conponent.carousel {
+        display: none;
+    }
+    .product-info .img-product{
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+
+} 
