@@ -1,7 +1,7 @@
 <template>
 <div class="container w-100">
   <div class="row">
-  <div class="muibox-root col-md-4 p-0">
+  <div class="d-none d-md-block col-md-4 p-0 ">
     <Carousal class="carousel" v-slot="{currentSlide}">
       <Slide v-for="(slide, index) in carousalSlide" :key="index">
           <div v-show="currentSlide === index" class="slide-info">
@@ -10,6 +10,7 @@
             
       </Slide>
     </Carousal>
+
     <!-- <img src="@/assets/images/slide-login.webp"  class=" w-100"> -->
   </div>
 
@@ -52,7 +53,7 @@
           </div>
 
           <button type="button" class="btn btn-secondary btn-lg w-100 mt-3 login-btn">Đăng ký</button>
-          <p class="text-center mt-2">Bạn có tài khoản chưa <router-link to="./login" class="text-decoration-underline ">Đăng nhập ngay</router-link></p>
+          <p class="text-center mt-2">Bạn có tài khoản chưa <router-link to="./login" class="text-decoration-underline ">Đăng nhập</router-link></p>
           
        </div>
        <div class="text-center my-2">

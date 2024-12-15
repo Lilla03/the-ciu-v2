@@ -11,19 +11,19 @@
       </ol>
     </div>
   </div>
-  <Toolbox v-bind:strSearch="strSearch" v-on:handleSearch="handleSearch"/>
+  <!-- <Toolbox v-bind:strSearch="strSearch" v-on:handleSearch="handleSearch"/> -->
   <Products v-bind:products="listProducts" />
 </template>
 
 <script>
 import Products from "@/components/Products/Product-card.vue";
-import Toolbox from "@/components/Products/Tool_box.vue/";
+// import Toolbox from "@/components/Products/Tool_box.vue/";
 import { mapGetters } from 'vuex';
 export default {
   name: "new",
   components: {
     Products,
-    Toolbox,
+    // Toolbox,
   },
   
   data() {
@@ -31,12 +31,12 @@ export default {
       strSearch: "mmm",
     };
   },
-  method: {
-    handleSearch(data) {
-      console.log("handle search in New.vue: ", data);
-      this.$emit('handleSearch', data)
-    },
-  },
+  // method: {
+  //   handleSearch(data) {
+  //     console.log("handle search in New.vue: ", data);
+  //     this.$emit('handleSearch', data)
+  //   },
+  // },
       computed: {
         ...mapGetters([
       'listProducts'

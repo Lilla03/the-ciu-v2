@@ -1,7 +1,7 @@
 <template>
   <div class="state-cart text-center mb-5" >
     <img
-      src="@/assets/images/empty-card.webp"
+      src="@/assets/images/empty-favorite-product.svg"
       style="width: auto; height: 200px"
     />
     <p>Giỏ hàng của bạn đang trống!</p>

@@ -18,7 +18,7 @@
               <div class="row m-2">
                 <input
                   class="py-2 border rounded"
-                  name="fname"
+                  name="phone"
                   type="text"
                   placeholder="Số điện thoại"
                   required
@@ -27,7 +27,7 @@
               <div class="row m-2">
                 <input
                   class="py-2 border rounded"
-                  name="fname"
+                  name="email"
                   type="text"
                   placeholder="Email"
                   required
@@ -36,41 +36,14 @@
               <div class="row m-2">
                 <input
                   class="py-2 border rounded"
-                  name="fname"
+                  name="address"
                   type="text"
                   placeholder="Địa chỉ"
                   required
                 />
               </div>
-              <div class="row m-2">
-                <input
-                  class="py-2 border rounded"
-                  name="fname"
-                  type="text"
-                  placeholder="Tỉnh thành"
-                  required
-                />
-              </div>
-              <div class="row m-2">
-                <input
-                  class="py-2 border rounded"
-                  name="fname"
-                  type="text"
-                  placeholder="Quận huyện"
-                  required
-                />
-              </div>
-              <div class="row m-2">
-                <input
-                  class="py-2 border rounded"
-                  name="fname"
-                  type="text"
-                  placeholder="Phường xã"
-                  required
-                />
-              </div>
               <textarea
-                class="row note-form-control m-2 w-100"
+                class="row note-form-control m-2 w-100  border"
                 rows="3"
                 placeholder="Ghi chú..."
               ></textarea>
@@ -79,15 +52,15 @@
           <div id="method " class="col-md-6 py-3">
             <div class="delivery">
               <h5 class="my-3">Vận chuyển</h5>
-              <select class="w-100 p-2" name="shipping-method" id="ship-com">
-                <option>Nhanh</option>
-                <option>Tiết kiệm</option>
-                <option>Hỏa tốc</option>
+              <select class="w-100 p-2 border rounded" name="shipping-method" id="ship-cost">
+                <option value="5">Nhanh</option>
+                <option value="3">Tiết kiệm</option>
+                <option value="10">Hỏa tốc</option>
               </select>
             </div>
             <div class="payment">
               <h5 class="mt-5">Thanh toán</h5>
-              <div class="row ms-2">
+              <div class="row">
                 <div class="form-check border p-3">
                   <input
                     type="radio"
@@ -97,9 +70,7 @@
                     value="Thanh toán khi giao hàng (COD)"
                     checked
                   />
-                  <label class="form-check-label" for="radio1"
-                    >Thanh toán khi giao hàng (COD)
-                  </label>
+                  <label class="form-check-label" for="radio1">Thanh toán khi giao hàng (COD)</label>
                 </div>
                 <div class="form-check border p-3">
                   <input
@@ -130,65 +101,52 @@
             <div class="row">
               <div
                 class="product-list"
-                v-for="product in selectedItems"  
-                :key="product.code"
+                v-for="product in selectedItems"
+                :key="product.id"
               >
-                <div class="container w-100 d-flex align-items-center border-bottom justify-contents-between ">
-                   <div v-for="(image, index) in product.images" :key="index">
-                    <img class="img-payment" :src="image.baseUrl" />
+                <div class="container w-100 d-flex align-items-center border-bottom justify-content-between">
+                  <img class="img-payment" :src="product?.thumbnail ?? ''" />
+                  <div class="d-flex w-100 justify-content-between m-2">
+                    <div class="d-flex flex-column">
+                      <p class="m-0">{{ product.title }}</p>
+                    </div>
+                    <div class="align-self-center">
+                      <span class="align-self-center me-3">x{{ product.quantity }}</span>
+                      {{ formattedPrice(product.price * product.quantity) }}
+                    </div>
                   </div>
-                  <div class="d-flex w-100 justify-content-between  m-2">
-                  <div class="d-flex flex-column">
-                      <p class=" m-0">{{ product.name }}</p>
-                      <span >{{product.selectedSize}}-{{product.selectedColor}}</span>
-                  </div>
-                  <span class=" align-self-center ">x{{ product.quantity }}</span>
-                  <div class="align-self-center ">{{
-                    formattedPrice(product.price.value * product.quantity)
-                  }}</div>
                 </div>
               </div>
             </div>
-          </div>
             <div class="row">
               <div class="discount-code">
                 <div class="d-flex py-3 border-bottom justify-content-between">
                   <input
-                    class="mx-2 p-2 border w-75"
+                    class="mx-2 p-2 border w-50 rounded"
                     type="text"
                     placeholder="Nhập mã giảm giá"
                   />
-                  <button class="btn btn-dark p-2">Áp dụng</button>
+                  <button class="btn btn-dark p-2 font-size-sm">Áp dụng</button>
                 </div>
                 <div class="order-sum">
                   <table class="w-100 my-3">
                     <tbody>
                       <tr class="total-line">
-                        <th class="total-line__name w-70 fw-normal py-1">
-                          Tạm tính
-                        </th>
+                        <th class="total-line__name w-70 fw-normal py-1">Tạm tính</th>
                         <td class="total-line__price w-30 text-end">
                           {{ formattedPrice(totalAmount) }}
                         </td>
                       </tr>
                       <tr class="total-line">
-                        <th class="total-line__name w-70 fw-normal py-1">
-                          Phí vận chuyển
-                        </th>
-                        <td class="total-line__price w-30 text-end">-</td>
+                        <th class="total-line__name w-70 fw-normal py-1">Phí vận chuyển</th>
                       </tr>
                       <tr class="border-bottom">
-                        <th class="fst-italic font-helvetica pb-3">
-                          Freeship đơn hàng từ 300k
-                        </th>
                         <th></th>
                       </tr>
                     </tbody>
                     <tfoot>
                       <tr class="total-line">
-                        <th class="total-line__name w-70 fw-normal py-1">
-                          Tổng cộng
-                        </th>
+                        <th class="total-line__name w-70 fw-normal py-1">Tổng cộng</th>
                         <td class="total-line__price w-30 text-end">
                           <h5>{{ formattedPrice(totalAmount) }}</h5>
                         </td>
@@ -201,15 +159,12 @@
           </div>
           <div class="slide-bar-nav">
             <div class="d-flex px-4 justify-content-between">
-              <router-link to="/cart" class="nav-link">
-                <i class="fa fa-angle-left" aria-hidden="true"></i>Quay lại giỏ
-                hàng</router-link
-              >
-              <router-link
-                to="/cart/payment/done"
-                class="btn btn-dark p-2 float-end"
-                >ĐẶT HÀNG</router-link
-              >
+              <router-link to="/cart" class="nav-link fs-7">
+                <i class="fa fa-angle-left" aria-hidden="true"></i> Quay lại giỏ hàng
+              </router-link>
+              <router-link to="/cart/payment/done" class="btn btn-dark p-2 float-end">
+                ĐẶT HÀNG
+              </router-link>
             </div>
           </div>
         </div>
@@ -220,18 +175,21 @@
 
 <script>
 import { mapGetters } from "vuex";
+
 export default {
+  data() {
+    return {
+      ship_cost: 0,
+      cities: null,
+      districts: null,
+      communes: null,
+    };
+  },
   computed: {
-    ...mapGetters(["formattedPrice", "selectedItems", "getCartItems"]),
-    cartItems() {
-      return this.getCartItems;
-    },
+    ...mapGetters(["formattedPrice", "selectedItems"]),
     totalAmount() {
-      const selectedItems = this.cartItems.filter(
-        (product) => product.selected
-      );
-      const sum = selectedItems.reduce(
-        (total, product) => total + product.price.value * product.quantity,
+      const sum = this.selectedItems.reduce(
+        (total, product) => total + product.price * product.quantity,
         0
       );
       return sum;
@@ -241,6 +199,9 @@ export default {
 </script>
 
 <style scoped>
+input:focus {
+  border: 1px gray solid;
+}
 .img-payment {
   height: 50px;
   width: 50px;
@@ -249,6 +210,4 @@ export default {
 input::before {
   content: unset;
 }
-
 </style>
->

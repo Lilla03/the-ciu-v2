@@ -1,7 +1,7 @@
 <template>
-<div class="container w-100">
-  <div class="row">
-  <div class="muibox-root col-lg-4 p-0">
+<div class="container w-100 ">
+  <div class="row d-flex justify-content-center align-items-center">
+  <!-- <div class="muibox-root col-lg-4 p-0">
     <Carousal class="carousel" v-slot="{currentSlide}">
         <Slide v-for="(slide, index) in carousalSlide" :key="index">
             <div v-show="currentSlide === index" class="slide-info">
@@ -9,9 +9,9 @@
             </div>
         </Slide>
     </Carousal>
-  </div>
+  </div> -->
 
-    <div class= " mui-stack-root col-lg-8">
+    <div class= " mui-stack-root w-75 ">
        <img src="@/assets/images/logo.png"  class="mx-auto mt-3" height="45">
        <div class="form-login">
         <h2 class="w-100 ">Welcome to the C.I.U!</h2>
@@ -38,12 +38,13 @@
                   <label class="input-form-label fs-5">Số điện thoại hoặc email</label>
                   <div class="input-icons mb-2">
                     <i class="fa-regular fa-user icon"></i>
-                    <input placeholder="Nhập số điện thoại hoặc email của bạn" class="input-form-control border" >
+                    <input  v-model="username" placeholder="Nhập số điện thoại hoặc email của bạn" class="input-form-control border" >
                   </div>
                   <label class="input-form-label fs-5">Mật khẩu</label>
                   <div class="input-icons mb-3">
                     <i class="fa-solid fa-lock icon"></i>
-                    <input placeholder="Nhập mật khẩu của bạn" class=" input-form-control border">
+                    <input v-model="password" placeholder="Nhập mật khẩu của bạn" class=" input-form-control border">
+                    <p v-if="loginError" style="color: red">{{ loginError }}</p>
                   </div>
                   <div class="mb-3">
                     <div class="form-check">
@@ -53,8 +54,8 @@
                       </label>
                       <span class="text-decoration-underline float-end">Quên mật khẩu</span>
                     </div>
-                    <button type="button" class="btn btn-secondary btn-lg w-100 mt-3 login-btn">Đăng nhập</button>
-                    <p class="text-center mt-2">Bạn có tài khoản chưa <router-link to="./sign-up" class="text-decoration-underline ">Đăng kí ngay</router-link></p>
+                    <button type="button" class="btn btn-secondary btn-lg w-100 mt-3 login-btn"   @click="handleLogin">Đăng nhập</button>
+                    <p class="text-center mt-2">Bạn có tài khoản chưa <router-link to="./sign-up" class="text-decoration-underline ">Đăng kí </router-link></p>
                   </div>
                 </div>
               </div>
@@ -69,24 +70,87 @@
 
 
 <script>
-import Slide from '@/components/Slide.vue'
-import Carousal from '@/components/Carousal.vue'
+// import Slide from '@/components/Slide.vue'
+// import Carousal from '@/components/Carousal.vue'
 
 
+// export default {
+//   components: { Carousal, Slide },
+//     name:'Login-in',
+//     setup() {
+//         const carousalSlide = [
+//             require('@/assets/images/sl-1.webp'),
+//             // require('@/assets/images/sl-2.webp'),
+//             require('@/assets/images/sl-3.webp'),
+//             require('@/assets/images/sl-4.webp'),
+//             require('@/assets/images/sl-5.webp'),
+//         ];
+//         return {carousalSlide};
+//     }
+// }
+import { mapState, mapActions } from "vuex";
 export default {
-  components: { Carousal, Slide },
-    name:'Login-in',
-    setup() {
-        const carousalSlide = [
-            require('@/assets/images/sl-1.webp'),
-            // require('@/assets/images/sl-2.webp'),
-            require('@/assets/images/sl-3.webp'),
-            require('@/assets/images/sl-4.webp'),
-            require('@/assets/images/sl-5.webp'),
-        ];
-        return {carousalSlide};
+  data() {
+    return {
+      username: "",
+      password: "",
+      loginError: "",
+    };
+  },
+  computed: {
+    ...mapState(["token, user"]),
+  },
+    methods: {
+  ...mapActions(["login"]),
+//   async handleLogin() {
+//     if (!this.username || !this.password) {
+//       this.loginError = "Username and password are required!";
+//       return;
+//     }
+//     try {
+//       const response = await this.login({
+//         username: this.username,
+//         password: this.password,
+//       });
+// console.log(response);
+//       if (response && response.status === 200) {
+//         this.$router.push("/home"); 
+      
+//       } else {
+//         this.loginError = "Invalid username or password.";
+//       }
+//     } catch (error) {
+//       console.error("Login error:", error);
+//       this.loginError = "Invalid username or password.";  
+//     }
+//   },
+async handleLogin() {
+  if (!this.username || !this.password) {
+    this.loginError = "Username and password are required!";
+    return;
+  }
+  try {
+    const response = await this.login({
+      username: this.username,
+      password: this.password,
+    });
+
+    // Kiểm tra phản hồi từ API
+    if (response.status === 200) {
+      localStorage.setItem("token", response.data.accessToken);
+      this.$router.push("/home");
+    } else {
+      console.log("Login failed:", response);
+      this.loginError = "Invalid username or password.";
     }
+  } catch (error) {
+    console.error("Login error:", error);
+    this.loginError = "Invalid username or password.";  
+  }
 }
+
+},
+};
 </script>
 
 <style scoped>

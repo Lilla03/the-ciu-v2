@@ -10,9 +10,7 @@
           <div class="product-info">
             <figure class="border-bottom">
               <div class="hover-img overflow-hidden">
-                <div v-for="(image, index) in product.images" :key="index">
-                  <img class="w-100" :src="image.baseUrl" />
-                </div>
+                  <img class="w-100" :src="product.thumbnail" />
               </div>
 
               <div class="product-action">
@@ -29,17 +27,17 @@
             </figure>
 
             <div class="product-type">
-              {{ product.categoryName }}
+              {{ product.category }}
             </div>
             <div class="product-name">
               <div class="text-truncate px-3">
                 <router-link :to="`/product/${product.id}`">
-                  {{ product.name }}
+                  {{ product.title }}
                 </router-link>
               </div>
             </div>
             <div class="product-price fs-5">
-              {{ formattedPrice(product.price.value) }}
+              {{ formattedPrice(product.price) }}
             </div>
             <div class=" row ms-1 py-3">
               <div class="d-flex flex-row  overflow-auto" >

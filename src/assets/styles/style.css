@@ -32,6 +32,12 @@
 a{
     text-decoration: none;
 }
+.fs-7 {
+    font-size: 0.875rem; /* 14px */
+  }
+  .fs-8 {
+    font-size: 0.75rem; /* 12px */
+  }  
 .nav-item a{
     text-transform: uppercase;
     margin: 1em;
@@ -185,23 +191,30 @@ footer ul li img{
     background: #222;   
     display: none;
     }
-.catalog-item__t-shirt{
-    background-image: url("https://image.hm.com/assets/hm/84/66/846662cb5200eb4a5759dc7e4c801a2d912ceb8d.jpg");
+.catalog-item__beauty{
+    background-image: url("https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/thumbnail.png");
     background-size: cover;
     position: relative;
     background-position: center;
-    height: 400px;
+    height: 300px;
 }
 
-.catalog-item__jacket{
-    background-image: url("https://image.hm.com/assets/hm/19/63/1963f78945f45ae8ea8c7f784c48197d7579675e.jpg");
+.catalog-item__fragrances{
+    background-image: url("https://cdn.dummyjson.com/products/images/fragrances/Chanel%20Coco%20Noir%20Eau%20De/thumbnail.png");
     background-size: cover;
     background-position: center;
     position: relative;
     height: 100%;
 }
-.catalog-item__top{
-    background-image: url("https://image.hm.com/assets/hm/69/ad/69ad27e0b4d8f77bfabd06388719cee9912bb12e.jpg");
+.catalog-item__furniture{
+    background-image: url("https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/thumbnail.png");
+    background-size: cover;
+    position: relative;
+    background-position: center;
+    height: 100%;
+}
+.catalog-item__groceries{
+    background-image: url("https://cdn.dummyjson.com/products/images/groceries/Honey%20Jar/thumbnail.png");
     background-size: cover;
     position: relative;
     background-position: center;
@@ -218,10 +231,10 @@ footer ul li img{
 .border-bottom{
     position: relative;
 }
-.btn-outline-white{
+.btn-outline-white {
     position: absolute;
     top: 50%;
-    padding: 10px 20px;
+    padding: 10px;
     color: #fff; 
     width: 40%;
     border: 2px solid #fff;

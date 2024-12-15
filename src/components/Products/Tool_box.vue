@@ -25,10 +25,10 @@ export default {
     },
   },
   methods: {
-    handleSearch(event) {
-        console.log('handleSearch in toolbox')
-        this.$emit('handleSearch',event.target.value)
-    }
+    // handleSearch(event) {
+    //     console.log('handleSearch in toolbox')
+    //     this.$emit('handleSearch',event.target.value)
+    // }
   } 
 };
 </script>

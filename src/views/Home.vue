@@ -64,19 +64,6 @@
     </div>
     <!-- end policy -->
 
-    <!-- best-seller -->
-    <div class="lazy-box my-5">
-      <div class="container">
-        <div class="lazy-title">
-          <h4 class="text-uppercase text-center">Best seller</h4>
-        </div>
-        <ProductCart
-          v-bind:products="listProducts"
-          @addToCart="showProductDetail"
-        />
-      </div>
-    </div>
-    <!-- end best-seller -->
 
     <!-- blog -->
     <div class="lazy-box my-5">
@@ -117,14 +104,13 @@ export default {
   methods: {
     showProductDetail(product) {
       this.selectedProduct = product;
-      this.price = product.price.value;
       this.showPopup = true;
     },
     closePopup() {
       this.showPopup = false;
     },
   },
-  async mounted() {
+  async created() {
     await this.$store.dispatch("fetchData");
   },
 };

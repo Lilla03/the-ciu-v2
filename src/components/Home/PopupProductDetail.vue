@@ -6,9 +6,9 @@
       ></span>
       <div class="col-md-5">
         <div class="image-product hover-zoom">
-          <div v-for="(image, index) in selectedProduct.images" :key="index">
-            <img class="w-100" :src="image.baseUrl" />
-          </div>
+          <!-- <div v-for="(image, index) in selectedProduct.images" :key="index"> -->
+            <img class="w-100" :src="selectedProduct.thumbnail" />
+          <!-- </div> -->
           <span class="p-2"
             ><i class="fa-regular fa-heart me-3 mt-3"></i>Thêm vào danh sách yêu
             thích</span
@@ -17,18 +17,17 @@
       </div>
       <div class="col-md-2 overflow-auto" style="height: 500px">
         <div
-          v-for="(image, index) in selectedProduct.galleryImages"
+          v-for="(image, index) in selectedProduct.images"
           :key="index"
         >
-          <img :src="image.baseUrl" class="p-1 w-100 h-auto" />
+          <img :src="image" class="p-1 w-100 h-auto" />
         </div>
       </div>
       <div class="col-md-5">
         <div class="row">
-          <h4>{{ selectedProduct.name }}</h4>
-          <!-- <p class="text-secondary fs-6">{{ selectedProduct.product_desc }}</p> -->
-          <h4>{{ formattedPrice(price) }}</h4>
-          <div class="row size-option mt-1">
+          <h4>{{ selectedProduct?.title ?? "" }}</h4>
+          <h4>{{ formattedPrice(selectedProduct?.price) ?? "" }}</h4>
+          <!-- <div class="row size-option mt-1">
             <div class="col-md-3">
               <label class="fs-6 fw-bold me-3">Size:</label>
             </div>
@@ -59,7 +58,7 @@
               {{ color }}
             </div>
               </div>
-          </div>
+          </div> -->
           <div class="quality mt-2">
             <label class="fs-6 fw-bold me-5">Số lượng</label>
             <div class="d-inline-flex">
@@ -77,6 +76,7 @@
               </button>
             </div>
           </div>
+          <router-link  :to="`/product/${selectedProduct.id}`">Chi tiết sản phẩm</router-link>
           <div class="multi-task mt-4">
             <button class="btn btn-add-to-cart" @click="addToCart">
               Thêm vào giỏ hàng
@@ -100,7 +100,7 @@
 import { mapGetters } from "vuex";
 export default {
   name: "PopupProductDetail",
-  props: ["selectedProduct", "price"],
+  props: ["selectedProduct"],
   data() {
     return {
       showPopup: true,
@@ -110,26 +110,27 @@ export default {
     };
   },
   emits: ["closePopup"],
+
   computed: {
     ...mapGetters(["formattedPrice", "getCartItems"]),
-    quantity: {
-      get() {
-        const item = this.getCartItems.find(
-          (item) => item.code=== this.selectedProduct.id
-        );
-        return item ? item.quantity : 1;
-      },
-      set(value) {
-        this.$store.dispatch("updateLocalQuantity", {
-          productId: this.selectedProduct.id,
-          quantity: value,
-        });
-      },
-    },
+    // quantity: {
+    //   get() {
+    //     const item = this.getCartItems.find(
+    //       (item) => item.code=== this.selectedProduct.id
+    //     );
+    //     return item ? item.quantity : 1;
+    //   },
+    //   set(value) {
+    //     this.$store.dispatch("updateLocalQuantity", {
+    //       productId: this.selectedProduct.id,
+    //       quantity: value,
+    //     });
+    //   },
+    // },
   },
   methods: {
     closePopup() {
-      this.$emit("closePopup"); // Phát ra sự kiện đóng popup cho component cha
+      this.$emit("closePopup"); 
     },
     plusQty() {
       this.localQuantity++;
@@ -139,30 +140,33 @@ export default {
         this.localQuantity--;
       }
     },
-    selectSize(size) {
-      this.selectedSize = size;
-      this.$store.dispatch("updateSelectedSize", size);
-    },
-    selectColor(color) {
-      this.selectedColor = color;
-      this.$store.dispatch("updateSelectedColor", color);
-    },
+    // selectSize(size) {
+    //   this.selectedSize = size;
+    //   this.$store.dispatch("updateSelectedSize", size);
+    // },
+    // selectColor(color) {
+    //   this.selectedColor = color;
+    //   this.$store.dispatch("updateSelectedColor", color);
+    // },
     addToCart() {
-      if (!this.selectedSize || !this.selectedColor) {
-        alert("Vui lòng chọn kích thước và màu sắc.");
-        return;
-      }
+      // if (!this.selectedSize || !this.selectedColor) {
+      //   alert("Vui lòng chọn kích thước và màu sắc.");
+      //   return;
+      // }
       const productToAdd = {
         ...this.selectedProduct,
-        selectedColor: this.selectedColor,
-        selectedSize: this.selectedSize,
+        // selectedColor: this.selectedColor,
+        // selectedSize: this.selectedSize,
         quantity: this.localQuantity,
       };
+      
       this.$store.commit("ADD_TO_CART", productToAdd);
       alert("Sản phẩm đã được thêm vào giỏ hàng.");
     },
   },
+  
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -172,7 +176,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 99;
+  z-index: 999;
   background-color: rgba(0, 0, 0, 0.2);
 
   .popup-content {

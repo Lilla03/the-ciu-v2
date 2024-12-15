@@ -1,4 +1,5 @@
 <template>
+<div class="relative" style="height: 400px; ">
   <div class="carousel-conponent">
     <slot :currentSlide="currentSlide"/>
     <!-- Navigation -->
@@ -22,6 +23,8 @@
     </div>
 
   </div>
+</div>
+
  
 </template>
 
@@ -66,8 +69,12 @@ export default {
 
 <style scope="">
 .carousel-conponent{
-    position: relative;
-    height: 585px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* height: 100%;
+    width: 100%; */
+    object-fit: cover;
 }
 .navigate{
     position: absolute;

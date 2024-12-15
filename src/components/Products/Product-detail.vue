@@ -6,65 +6,43 @@
           <router-link to="/">Trang Chủ</router-link>
         </li>
         <li class="ms-3 py-3 text-secondary">
-          <router-link to="/product">Sản phẩm</router-link>
+          <router-link to="/catagory">Sản phẩm</router-link>
         </li>
         <li class="ms-3 py-3 text-secondary">
-          <router-link to="/product/3"
-            >Đầm denim hai dây THE C.I.U - Azura Dress 2</router-link
-          >
+          <router-link :to="`/product/${product?.id??''}`">{{ product?.title ?? "" }}</router-link>
         </li>
       </ol>
     </div>
   </div>
-  <div
-    class="container my-2 mb-5"
-  >
+  <div class="container my-2 mb-5" v-if="product">
     <div class="row">
       <div class="col-md-6">
         <div class="row">
-          <div class="image-product hover-zoom">
-            <img class="w-100" :src="product.images" />
+          <div class="d-flex justify-content-center">
+              <img class="w-75" :src="product.thumbnail" />
           </div>
+          
+         
           <div class="d-flex">
             <div
-              class="justify-content-around col-3 p-4"
-              v-for="colorChoice in product.colorChoice"
-              :key="colorChoice"
+              class="justify-content-around col-3 p-4 overflow-auto"
+              v-for="(image, index) in Array.isArray(product?.images)
+                ? product.images
+                : []"
+              :key="index"
             >
-              <img class="color-choice w-100" :src="colorChoice.url" />
+              <img :src="image" class="color-choice w-100" />
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="row">
-          <h3>{{ product.name }}</h3>
-          <p>{{ product.product_desc }}</p>
-          <h3>{{ formattedPrice(product.price) }}</h3>
-          <div class="size-option mt-3">
-            <label class="fs-5 fw-bold me-3">Size:</label>
-            <div
-              class="btn btn-light"
-              v-for="(size, index) in product.variantSizes"
-              :key="index"
-              :class="{ active: product === size.filterCode }"
-              @click="selectSize(size.filterCode)"
-            >
-              {{ size.filterCode }}
-            </div>
-          </div>
-          <div class="color-option mt-3">
-            <label class="fs-5 fw-bold me-3">Color:</label>
-           <div
-              class="btn btn-light"
-              v-for="(color, index) in product.articleColorNames"
-              :key="index"
-              :class="{ active: product === color  }"
-              @click="selectColor(color )"
-            >
-              {{ color }}
-            </div>
-          </div>
+          <h3>{{ product?.title ?? "" }}</h3>
+          <p class="fs-5">{{ product?.description ?? "" }}</p>
+          <p>{{ product?.rating??''}}<i class="fa-solid fa-star m-2 fs-6"></i><span class="fs-6 text-decoration-underline">{{product?.reviews.length}} đánh giá</span></p>
+          <h2><span class="fs-5 px-2 text-secondary text-decoration-line-through ">{{ formattedPrice((product?.price * (product.discountPercentage/100 + 1 ) )?? "") }}</span>{{ formattedPrice(product?.price ?? "") }}<span class="fs-5 px-2 text-primary">({{product.discountPercentage}}%)</span></h2>
+
           <div class="quality mt-4">
             <label class="fs-5 fw-bold me-5">Số lượng</label>
             <div class="d-inline-flex">
@@ -74,7 +52,8 @@
               <input
                 class="form-control"
                 type="number"
-                v-model.number="product.quantity"
+                v-model.number="localQuantity"
+                @change="updateCartQuantity"
               />
               <button class="btn-sp" @click="plusQty()">
                 <i class="fa-solid fa-plus"></i>
@@ -86,7 +65,7 @@
               Thêm vào giỏ hàng
             </button>
             <router-link
-              @click="addToCart(product)" 
+              @click="addToCart(product)"
               :style="{ color: 'white' }"
               to="/cart"
               ><button class="btn btn-buy-now btn-dark">
@@ -101,25 +80,16 @@
     <div class="row mt-4 more-information-container">
       <div class="d-flex">
         <button
-          class="btn btn-lg fw-bold fs-5 "
+          class="btn btn-lg fw-bold fs-5"
           type="button"
-          data-bs-toggle="collapse" 
+          data-bs-toggle="collapse"
           data-bs-target="#productDetail"
           aria-expanded="false"
           aria-controls="productDetail"
         >
           Chi tiết sản phẩm
         </button>
-        <button
-          class="btn btn-lg fw-bold fs-5"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#bonusInformation"
-          aria-expanded="false"
-          aria-controls="bonusInformation"
-        >
-          Thông tin bổ sung
-        </button>
+        
         <button
           class="btn btn-lg fw-bold fs-5"
           type="button"
@@ -132,80 +102,130 @@
         </button>
       </div>
       <div id="allInfoGroup">
-        <div class="fs-5 collapse show" id="productDetail" data-bs-parent="#myGroup">
-          {{ product.product_desc }}
+        <div
+          class="fs-5 collapse show"
+          id="productDetail"
+          data-bs-parent="#myGroup"
+        >
+        <p>Thương hiệu: {{product.brand}}</p>
+        <p>Danh mục: {{product.category}}</p>
+        <p>Tên sản phẩm: {{product.title}}</p>
+        <p>Mô tả chi tiết: {{product.description}}</p>
+        <div class="">
+            <p>Kích thước:</p>
+            <p><i class="fa-solid fa-check pe-3"></i>Chiều dài: {{(product.dimensions.height*2.54).toFixed(2)}}cm</p>
+            <p><i class="fa-solid fa-check pe-3"></i>Chiều rộng: {{(product.dimensions.width*2.54).toFixed(2)}}cm</p>
+            <p><i class="fa-solid fa-check pe-3"></i>Chiều sâu: {{(product.dimensions.depth*2.54).toFixed(2)}}cm</p>
+            <p>Trọng lượng: {{(product.weight * 0.453592).toFixed(2)}}kg</p>
+
         </div>
-        <div class="collapse" id="bonusInformation" data-bs-parent="#myGroup">
-          <img src="@/assets/images/bonus_infomation.jpg" class="w-100" />
+      
         </div>
-        <div class="collapse" id="shipment" data-bs-parent="#allInfoGroup">
-          
+        <div
+          class="collapse"
+          id="shipment"
+          data-bs-parent="#allInfoGroup"
+        >
+        <p>Thời gian giao hàng: {{product.shippingInformation}}</p>
+        <p>Thời gian hoàn hàng: {{product.returnPolicy}}</p>
+          <p>Chính sách hoàn trả: {{product.warrantyInformation}}</p>
         </div>
       </div>
     </div>
 
-    <h2 class="mt-4">Sản phẩm tương tự</h2>
-    <!-- <ProductCart :products="relatedProducts"/> -->
-     <div class="container d-flex justify-content-center">
-        <a href="#" class="read-more d-flex text-uppercase">
-          Xem thêm
-          <span class="read-more-icon mx-2"
-            ><i class="fa-solid fa-arrow-right"></i></span
-        ></a>
+    <h2 class="mt-4">Đánh giá sản phẩm</h2>
+      {{product.rating}} trên 5
+    <div class="container d-flex justify-content-start">
+      <div class="row w-100" >
+        <div class="  border-bottom " v-for="(review,index) in product.reviews" :key="index">
+           <p>{{review.reviewerName}}</p> <span class="" v-for="(rating,index) in review.rating" :key="index">
+            <i class="fa-solid fa-star  fs-6"></i>
+           </span>
+           <p>{{review.date}}</p>
+           
+            <p>{{review.comment}}</p>
+        </div>
       </div>
+     
+    </div>
+
   </div>
 </template>
 
 <script>
-import api from '@/service/api';
-import { mapGetters } from 'vuex';
-// import ProductCart from './Product-card.vue'
+import api from "@/utils/api";
+import { mapGetters } from "vuex";
+
 export default {
   name: "ProductDetail",
-  // components:{ProductCart},
   data() {
     return {
-      product: {},
-      product_id: '',
+      product: null,
+      localQuantity: 1,
+      // selectedSize: null,
+      // selectedColor: null,
+    };
+  },
+  async created() {
+    const productId = this.$route.params.id;
+    try {
+      const response = await api.getProductDetail(productId);
+      console.log('single product: ',response.data)
+      if(response.data) {
+        this.product = response.data;
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
     }
   },
-  onBeforeRouteUpdate() {
-     const product_data =  api.getProducts().then(response => {
-        return response.data.results;
-     });
-           console.log( this.$router.params.id )
-      this.product_id =  this.$router.params.id;
-
-      this.product = product_data[ this.product_id]
-      console.log(this.product)
-
+  methods: {
+    plusQty() {
+      this.localQuantity++;
+    },
+    minusQty() {
+      if (this.localQuantity > 1) {
+        this.localQuantity--;
+      }
+    },  
+    // selectSize(size) {
+    //   this.selectedSize = size;
+    //   console.log(this.selectedSize)
+    //   this.$store.dispatch("updateSelectedSize", size);
+    // },
+    // selectColor(color) {
+    //   this.selectedColor = color;
+    //   this.$store.dispatch("updateSelectedColor", color);
+    // },
+    addToCart() {
+      const productToAdd = {
+        ...this.product,
+        quantity: this.localQuantity,
+      };
+      
+      this.$store.commit("ADD_TO_CART", productToAdd);
+      alert("Sản phẩm đã được thêm vào giỏ hàng.");
+    },
   },
   computed: {
-    ...mapGetters(['formattedPrice']),
-  },
-  methods: {
-
-    minusQty(product) {
-      this.$store.commit('minusQty', product)
-    },
-    plusQty(product) {
-       this.$store.commit('plusQty',product)
-    },
-
-   
-
+    ...mapGetters(["formattedPrice"]),
   },
 };
 </script>
-
 <style lang="scss" scoped>
-
+#allInfoGroup p {
+  font-size: 15px;
+}
+.fa-star{
+  color: #c96;
+}
+.active {
+  background-color: #111;
+  color: #fff;
+}
 .img-product {
   height: 300px;
 }
-p {
-  font-size: 1.3rem;
-}
+
 .size-option .btn {
   width: 3.5rem;
   margin: 0 0.5rem;
@@ -238,7 +258,7 @@ input::-webkit-inner-spin-button {
 }
 .read-more {
   color: #c96;
-  &:hover{
+  &:hover {
     color: #c96;
   }
 }
